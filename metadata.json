@@ -1,0 +1,5 @@
+{
+  "name": "EnglishTech AI",
+  "description": "An English learning platform for technical students with AI-powered speaking and writing feedback.",
+  "requestFramePermissions": ["microphone"]
+}

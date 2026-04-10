@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "User's basic information, role, and gamification progress.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string", "format": "uri" },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "xp": { "type": "integer", "description": "Experience points" },
+        "coins": { "type": "integer", "description": "Virtual currency" },
+        "streak": { "type": "integer", "description": "Consecutive days active" },
+        "lastActiveDate": { "type": "string", "format": "date-time" },
+        "speakingLevel": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "writingLevel": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "speakingProgress": { "type": "integer", "description": "Items completed in current speaking level" },
+        "writingProgress": { "type": "integer", "description": "Items completed in current writing level" }
+      },
+      "required": ["uid", "email"]
+    },
+    "gameResult": {
+      "title": "Game Result",
+      "description": "Result of a vocabulary or grammar game.",
+      "type": "object",
+      "properties": {
+        "gameType": { "type": "string" },
+        "score": { "type": "integer" },
+        "totalQuestions": { "type": "integer" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["gameType", "score", "totalQuestions", "date"]
+    },
+    "speakingAttempt": {
+      "title": "Speaking Attempt",
+      "description": "Result of a pronunciation practice session.",
+      "type": "object",
+      "properties": {
+        "targetText": { "type": "string" },
+        "recognizedText": { "type": "string" },
+        "isCorrect": { "type": "boolean" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetText", "recognizedText", "isCorrect", "date"]
+    },
+    "writingCheck": {
+      "title": "Writing Check",
+      "description": "Result of an email writing check.",
+      "type": "object",
+      "properties": {
+        "originalText": { "type": "string" },
+        "correctedText": { "type": "string" },
+        "feedback": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["originalText", "correctedText", "feedback", "date"]
+    },
+    "theoryItem": {
+      "title": "Theory Item",
+      "description": "A piece of learning material (vocab, tech, or grammar).",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "category": { "type": "string", "enum": ["lexical", "technical", "grammar"] },
+        "order": { "type": "integer" }
+      },
+      "required": ["title", "content", "category"]
+    },
+    "gameQuestion": {
+      "title": "Game Question",
+      "description": "A question for the learning games.",
+      "type": "object",
+      "properties": {
+        "question": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "answer": { "type": "string" },
+        "category": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["question", "options", "answer"]
+    },
+    "speakingPrompt": {
+      "title": "Speaking Prompt",
+      "description": "A target sentence for speaking practice.",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "translation": { "type": "string" },
+        "category": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["text", "translation"]
+    },
+    "writingTopic": {
+      "title": "Writing Topic",
+      "description": "A suggested topic for writing practice.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["title", "description"]
+    },
+    "dictationSentence": {
+      "title": "Dictation Sentence",
+      "description": "A sentence for Level 1 writing practice (dictation).",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "category": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["text"]
+    }
+  },
+  "firestore": {
+    "/theoryItems/{itemId}": {
+      "schema": "theoryItem",
+      "description": "Global learning materials managed by admins."
+    },
+    "/gameQuestions/{questionId}": {
+      "schema": "gameQuestion",
+      "description": "Global game questions managed by admins."
+    },
+    "/speakingPrompts/{promptId}": {
+      "schema": "speakingPrompt",
+      "description": "Global speaking prompts managed by admins."
+    },
+    "/writingTopics/{topicId}": {
+      "schema": "writingTopic",
+      "description": "Global writing topics managed by admins."
+    },
+    "/dictationSentences/{sentenceId}": {
+      "schema": "dictationSentence",
+      "description": "Global dictation sentences managed by admins."
+    },
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "User profile document."
+    },
+    "/users/{userId}/gameResults/{resultId}": {
+      "schema": "gameResult",
+      "description": "History of game results for a user."
+    },
+    "/users/{userId}/speakingAttempts/{attemptId}": {
+      "schema": "speakingAttempt",
+      "description": "History of speaking practice attempts."
+    },
+    "/users/{userId}/writingChecks/{checkId}": {
+      "schema": "writingCheck",
+      "description": "History of AI writing checks."
+    }
+  }
+}

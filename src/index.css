@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-brand-pink: #ff8a3d;
+  --color-brand-soft-pink: #2a1a10;
+  --color-brand-yellow: #ffb347;
+  --color-brand-cream: #0b0b0b;
+  --color-brand-indigo: #ff7a00;
+  
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-black text-slate-100 antialiased transition-colors duration-300;
+    background-image: none;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .dark body {
+    @apply bg-black text-slate-100;
+    background-image: none;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::before {
+    background-image:
+      radial-gradient(2px 2px at 12% 18%, rgba(255, 190, 120, 0.85), transparent),
+      radial-gradient(1.5px 1.5px at 30% 72%, rgba(255, 132, 0, 0.8), transparent),
+      radial-gradient(2px 2px at 55% 40%, rgba(255, 230, 180, 0.75), transparent),
+      radial-gradient(1.5px 1.5px at 72% 24%, rgba(255, 160, 80, 0.8), transparent),
+      radial-gradient(2px 2px at 84% 66%, rgba(255, 208, 140, 0.8), transparent),
+      radial-gradient(1.5px 1.5px at 20% 86%, rgba(255, 170, 90, 0.7), transparent),
+      radial-gradient(2px 2px at 64% 82%, rgba(255, 235, 190, 0.8), transparent);
+    opacity: 0.65;
+    animation: twinkleSpark 5.5s ease-in-out infinite alternate;
+  }
+
+  body::after {
+    background:
+      radial-gradient(40% 32% at 10% 18%, rgba(255, 122, 0, 0.14), transparent 70%),
+      radial-gradient(36% 28% at 88% 70%, rgba(255, 166, 77, 0.12), transparent 72%);
+    filter: blur(10px);
+    animation: glowDrift 11s ease-in-out infinite;
+  }
+}
+
+@layer components {
+  .cute-card {
+    @apply bg-[#151515] rounded-3xl border-2 border-[#3a2a1a] shadow-sm hover:shadow-md transition-all duration-300;
+    @apply dark:bg-[#151515] dark:border-[#4a311d] dark:shadow-none;
+  }
+  
+  .cute-button-primary {
+    @apply bg-brand-indigo text-black px-6 py-3 rounded-2xl font-bold shadow-lg shadow-orange-500/20 hover:bg-[#ff922e] hover:-translate-y-0.5 active:translate-y-0 transition-all;
+    @apply dark:shadow-none;
+  }
+
+  .cute-button-pink {
+    @apply bg-brand-pink text-black px-6 py-3 rounded-2xl font-bold shadow-lg shadow-orange-500/20 hover:bg-[#ff9e5d] hover:-translate-y-0.5 active:translate-y-0 transition-all;
+    @apply dark:shadow-none;
+  }
+
+  .sidebar-item {
+    @apply flex flex-col items-center justify-center gap-1 p-3 rounded-2xl transition-all duration-200 text-slate-400 dark:text-slate-400 hover:text-brand-indigo hover:bg-orange-500/10;
+    @apply dark:hover:bg-orange-500/10;
+  }
+
+  .sidebar-item-active {
+    @apply text-brand-indigo bg-orange-500/15;
+    @apply dark:bg-orange-500/15 dark:text-brand-indigo;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+}
+
+.glass-morphism {
+  @apply bg-white/70 backdrop-blur-md border border-white/20;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes twinkleSpark {
+  0% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+  100% { opacity: 0.45; transform: scale(1); }
+}
+
+@keyframes glowDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+  50% { transform: translate3d(0, -10px, 0) scale(1.03); opacity: 0.95; }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+.streak-badge {
+  @apply bg-orange-500/15 text-orange-300 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 border border-orange-500/30;
+}
