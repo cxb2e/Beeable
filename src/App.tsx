@@ -2878,7 +2878,7 @@ const AdminPanel = ({
       data = [{ text: 'Hello world', translation: 'Chào thế giới', category: 'professional', level: 1, order: 1 }];
       fileName = 'speaking_prompts_template.xlsx';
     } else if (contentType === 'writing') {
-      data = [{ title: 'Intro', description: 'Write about yourself', category: 'email', level: 1, order: 1 }];
+      data = [{ title: 'Shipment Delay Notice', description: 'Write a short email to inform a client that delivery is delayed due to weather and provide a new ETA.', category: 'email', level: 3, order: 1 }];
       fileName = 'writing_topics_template.xlsx';
     } else if (contentType === 'dictation') {
       data = [{ text: 'The cat is on the mat.', order: 1 }];

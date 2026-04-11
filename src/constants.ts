@@ -6,13 +6,13 @@ export const LEXICAL_KNOWLEDGE: TheoryItem[] = [
     id: 'lex-1',
     category: 'lexical',
     title: 'Core Terms (Từ vựng cốt lõi)',
-    content: 'Innovation: Sự đổi mới, sáng tạo.\nEfficiency: Hiệu quả, năng suất cao.\nScalability: Khả năng mở rộng.\nRobustness: Tính mạnh mẽ, ổn định.\nReliability: Độ tin cậy.\nMaintainability: Khả năng bảo trì.'
+    content: 'Transshipment: Chuyển tải tại cảng trung chuyển.\nBreak-bulk: Chia lẻ hàng, không đi nguyên container.\nCross-docking: Kho bãi không lưu kho, chuyển thẳng sang giao nhận.\nOrder picking: Lấy hàng theo đơn.\nReverse logistics: Logistics ngược (thu hồi, bảo hành, tái chế).\nTracking and tracing: Theo dõi và truy xuất lô hàng.\nWarehousing: Hoạt động kho bãi và quản lý tồn kho.\nConsolidation: Gom nhiều lô hàng nhỏ thành một lô lớn.\nInventory: Hàng tồn kho.\nFreight forwarding: Dịch vụ giao nhận vận tải quốc tế.'
   },
   {
     id: 'lex-2',
     category: 'lexical',
     title: 'Collocations (Cụm từ thường gặp)',
-    content: 'Make a decision: Đưa ra quyết định.\nTake a risk: Chấp nhận rủi ro.\nSolve a problem: Giải quyết vấn đề.\nManage a project: Quản lý dự án.\nMeet a deadline: Kịp thời hạn.\nDeliver a solution: Cung cấp một giải pháp.'
+    content: 'Provide solutions: Cung cấp giải pháp.\nEnsure delivery: Đảm bảo việc giao hàng.\nSpecialize in: Chuyên về.\nMeet needs: Đáp ứng nhu cầu.\nReal-time information: Thông tin thời gian thực.\nHandle shipments: Xử lý các lô hàng.\nA wide range of: Đa dạng các.\nPrice enquiry: Yêu cầu báo giá.'
   },
   {
     id: 'lex-3',
@@ -27,20 +27,20 @@ export const TECHNICAL_TERMINOLOGIES: TheoryItem[] = [
   {
     id: 'tech-1',
     category: 'technical',
-    title: 'Software Development (Phát triển phần mềm)',
-    content: 'Algorithm: Thuật toán.\nDatabase: Cơ sở dữ liệu.\nFramework: Bộ khung phần mềm.\nAPI (Application Programming Interface): Giao diện lập trình ứng dụng.\nVersion Control: Kiểm soát phiên bản (Git).\nDeployment: Triển khai phần mềm.'
+    title: 'Freight & Container Terms (Thuật ngữ vận tải hàng)',
+    content: 'FCL (Full Container Load): Hàng nguyên container.\nLCL (Less than Container Load): Hàng lẻ, không đủ container.\n3PL (Third-party logistics): Hậu cần bên thứ ba.\nAWB (Air Waybill): Vận đơn hàng không.\nNVOCC (Non-Vessel Operating Common Carrier): Đơn vị vận chuyển công cộng không tàu.\nEnd-to-end solutions: Giải pháp trọn gói từ đầu đến cuối.'
   },
   {
     id: 'tech-2',
     category: 'technical',
-    title: 'Cloud & Infrastructure',
-    content: 'Cloud Computing: Điện toán đám mây.\nVirtualization: Ảo hóa.\nContainerization: Đóng gói ứng dụng (Docker).\nMicroservices: Kiến trúc vi dịch vụ.\nLoad Balancing: Cân bằng tải.'
+    title: 'Warehouse & Fulfillment (Kho vận và hoàn tất đơn)',
+    content: 'DC (Distribution Center): Trung tâm phân phối.\nKitting: Đóng bộ, gom bộ thành một đơn vị.\nPick and pack: Lấy hàng và đóng gói.\nRFID (Radio Frequency Identification): Nhận dạng bằng tần số vô tuyến.\nCustoms clearance: Thông quan hải quan.'
   },
   {
     id: 'tech-3',
     category: 'technical',
-    title: 'Cybersecurity',
-    content: 'Encryption: Mã hóa.\nFirewall: Tường lửa.\nAuthentication: Xác thực.\nAuthorization: Phân quyền.\nVulnerability: Lỗ hổng bảo mật.'
+    title: 'Transport & Tracking (Vận chuyển và theo dõi)',
+    content: 'EDI (Electronic Data Interchange): Trao đổi dữ liệu điện tử.\nHGV (Heavy Goods Vehicle): Xe tải hạng nặng.\nGPS (Global Positioning System): Hệ thống định vị toàn cầu.\nRoute optimization: Tối ưu lộ trình giao nhận.\nInventory accuracy: Độ chính xác tồn kho.'
   }
 ];
 
@@ -50,19 +50,19 @@ export const GRAMMAR_STRUCTURES: TheoryItem[] = [
     id: 'gram-1',
     category: 'grammar',
     title: 'Simple Present: To Be (Affirmative)',
-    content: 'Cấu trúc: S + am/is/are + Complement.\nVí dụ: I am a software engineer. The system is robust. They are developers.'
+    content: 'Cấu trúc: S + am/is/are + Complement.\nVí dụ: I am a logistics coordinator. The warehouse is busy in the morning. They are delivery drivers.'
   },
   {
     id: 'gram-2',
     category: 'grammar',
     title: 'Present Continuous (Thì hiện tại tiếp diễn)',
-    content: 'Cấu trúc: S + am/is/are + V-ing.\nVí dụ: We are developing a new feature. The server is processing the request. They are testing the application.'
+    content: 'Cấu trúc: S + am/is/are + V-ing.\nVí dụ: We are loading the container now. The team is checking the shipping documents. They are tracking the truck in real time.'
   },
   {
     id: 'gram-3',
     category: 'grammar',
     title: 'Passive Voice (Câu bị động)',
-    content: 'Cấu trúc: S + be + V3/ed.\nVí dụ: The bug was fixed yesterday. The data is encrypted for security. The system is maintained regularly.'
+    content: 'Cấu trúc: S + be + V3/ed.\nVí dụ: The goods are packed before dispatch. The shipment was delayed by bad weather. The cargo is inspected at the distribution center.'
   }
 ];
 
@@ -71,88 +71,88 @@ export const GAME_QUESTIONS: GameQuestion[] = [
   {
     id: 'q1',
     category: 'vocab',
-    question: 'What is the ability of a system to handle a growing amount of work? (Khả năng hệ thống xử lý khối lượng công việc ngày càng tăng là gì?)',
-    options: ['Innovation', 'Scalability', 'Efficiency', 'Robustness'],
-    answer: 'Scalability'
+    question: 'Our company works hard to ______ solutions for all your transport problems. (Công ty chúng tôi nỗ lực để ______ giải pháp cho mọi vấn đề vận chuyển.)',
+    options: ['make', 'provide', 'do', 'give'],
+    answer: 'provide'
   },
   {
     id: 'q2',
     category: 'vocab',
-    question: 'A set of rules to be followed in calculations or other problem-solving operations is an... (Một tập hợp các quy tắc được tuân thủ trong tính toán là...)',
-    options: ['Algorithm', 'Database', 'Framework', 'API'],
-    answer: 'Algorithm'
+    question: 'We use a GPS system to ______ safe delivery of your goods. (Chúng tôi dùng GPS để ______ giao hàng an toàn.)',
+    options: ['sure', 'ensure', 'check', 'follow'],
+    answer: 'ensure'
   },
   {
     id: 'q3',
-    category: 'grammar',
-    question: 'Complete: The new software ____ very efficient. (Hoàn thành: Phần mềm mới ____ rất hiệu quả.)',
-    options: ['am', 'is', 'are', 'be'],
-    answer: 'is'
+    category: 'vocab',
+    question: 'GET Global Carrier ______ in sea freight and large containers. (GET Global Carrier ______ vận tải biển và container lớn.)',
+    options: ['specializes', 'special', 'specialist', 'specializing'],
+    answer: 'specializes'
   },
   {
     id: 'q4',
-    category: 'grammar',
-    question: 'Complete: Our team ____ high-quality code every day. (Hoàn thành: Đội ngũ của chúng tôi ____ mã nguồn chất lượng cao mỗi ngày.)',
-    options: ['write', 'writes', 'writing', 'wrote'],
-    answer: 'writes'
+    category: 'vocab',
+    question: 'We offer different services to ______ the needs of every customer. (Chúng tôi cung cấp nhiều dịch vụ để ______ nhu cầu của từng khách hàng.)',
+    options: ['see', 'meet', 'find', 'welcome'],
+    answer: 'meet'
   },
   {
     id: 'q5',
     category: 'vocab',
-    question: 'Which term refers to the process of packaging an application with its dependencies? (Thuật ngữ nào chỉ quá trình đóng gói ứng dụng cùng với các phụ thuộc của nó?)',
-    options: ['Virtualization', 'Containerization', 'Encryption', 'Deployment'],
-    answer: 'Containerization'
+    question: 'With our app, you can get ______ information about where your package is. (Với ứng dụng của chúng tôi, bạn có thể nhận thông tin ______ về vị trí kiện hàng.)',
+    options: ['real-time', 'real-day', 'quick-time', 'now-info'],
+    answer: 'real-time'
   },
   {
     id: 'q6',
     category: 'vocab',
-    question: 'What is a "Firewall" used for? (Tường lửa được sử dụng để làm gì?)',
-    options: ['Data storage', 'Network security', 'UI design', 'Code testing'],
-    answer: 'Network security'
+    question: 'Our staff will ______ your shipments very carefully. (Nhân viên chúng tôi sẽ ______ các lô hàng của bạn rất cẩn thận.)',
+    options: ['hand', 'handle', 'touch', 'carry'],
+    answer: 'handle'
   },
   {
     id: 'q7',
-    category: 'grammar',
-    question: 'Complete: The data ____ encrypted before being sent. (Hoàn thành: Dữ liệu ____ được mã hóa trước khi gửi đi.)',
-    options: ['is', 'are', 'am', 'be'],
-    answer: 'is'
+    category: 'vocab',
+    question: 'Sichuan Logistics offers ______ range of value-added services. (Sichuan Logistics cung cấp ______ các dịch vụ giá trị gia tăng.)',
+    options: ['a wide', 'a broad', 'a deep', 'a high'],
+    answer: 'a wide'
   },
   {
     id: 'q8',
-    category: 'grammar',
-    question: 'Complete: We ____ currently testing the new API. (Hoàn thành: Chúng tôi ____ hiện đang kiểm thử API mới.)',
-    options: ['is', 'are', 'am', 'be'],
-    answer: 'are'
+    category: 'vocab',
+    question: 'You can make a ______ enquiry online to get a quote for your shipping. (Bạn có thể tạo yêu cầu ______ trực tuyến để nhận báo giá vận chuyển.)',
+    options: ['rate', 'price', 'bill', 'cash'],
+    answer: 'price'
   }
 ];
 
 // (5) Communicative competence
 export const SPEAKING_PROMPTS: SpeakingPrompt[] = [
-  { id: 'sp-1', text: 'I am a software engineer working on innovation.', translation: 'Tôi là một kỹ sư phần mềm đang làm việc về sự đổi mới.', category: 'professional' },
-  { id: 'sp-2', text: 'The system architecture is highly scalable and robust.', translation: 'Kiến trúc hệ thống có khả năng mở rộng cao và mạnh mẽ.', category: 'technical' },
-  { id: 'sp-3', text: 'We need to implement a more secure authentication method.', translation: 'Chúng ta cần triển khai một phương thức xác thực an toàn hơn.', category: 'technical' },
-  { id: 'sp-4', text: 'Can you explain the benefits of using a microservices architecture?', translation: 'Bạn có thể giải thích lợi ích của việc sử dụng kiến trúc vi dịch vụ không?', category: 'professional' },
-  { id: 'sp-5', text: 'The deployment process is fully automated using CI/CD pipelines.', translation: 'Quá trình triển khai được tự động hóa hoàn toàn bằng đường ống CI/CD.', category: 'technical' }
+  { id: 'sp-1', text: 'Our company provides customized logistics solutions for your shipping needs.', translation: 'Công ty chúng tôi cung cấp các giải pháp logistics tùy chỉnh cho nhu cầu vận chuyển của bạn.', category: 'professional' },
+  { id: 'sp-2', text: 'We specialize in full container load and international freight forwarding services.', translation: 'Chúng tôi chuyên về hàng nguyên container và dịch vụ giao nhận vận tải quốc tế.', category: 'technical' },
+  { id: 'sp-3', text: 'Our team handles shipments carefully and ensures on-time delivery.', translation: 'Đội ngũ của chúng tôi xử lý lô hàng cẩn thận và đảm bảo giao hàng đúng hạn.', category: 'professional' },
+  { id: 'sp-4', text: 'You can track your cargo in real time with our GPS-based system.', translation: 'Bạn có thể theo dõi lô hàng theo thời gian thực bằng hệ thống dựa trên GPS của chúng tôi.', category: 'technical' },
+  { id: 'sp-5', text: 'We offer a wide range of value-added services, including pick and pack.', translation: 'Chúng tôi cung cấp đa dạng dịch vụ giá trị gia tăng, bao gồm lấy hàng và đóng gói.', category: 'professional' }
 ];
 
 export const DICTATION_SENTENCES = [
-  "The server is currently down for maintenance.",
-  "Our team uses React for the frontend development.",
-  "The database needs to be optimized for better performance.",
-  "Innovation is the key to success in the IT industry.",
-  "We are working on a highly scalable cloud architecture.",
-  "Cybersecurity is a top priority for our organization.",
-  "The API documentation provides clear instructions for integration.",
-  "We use Git for version control and collaboration.",
-  "The application is deployed on a Kubernetes cluster.",
-  "User experience is crucial for the success of any software product."
+  "The shipment is delayed due to heavy rain at the port.",
+  "Please confirm the pickup time with the trucking partner.",
+  "All cartons must be labeled before loading the container.",
+  "We need to update the estimated arrival time for this order.",
+  "The warehouse team completed inbound inspection this morning.",
+  "Customs clearance requires the commercial invoice and packing list.",
+  "Our dispatcher optimized the route to reduce fuel costs.",
+  "The driver reported a traffic jam near the distribution center.",
+  "Inventory accuracy improved after the weekly cycle count.",
+  "Customer satisfaction depends on on-time and damage-free delivery."
 ];
 
 export const WRITING_TOPICS: WritingTopic[] = [
-  { id: 'wt-1', title: 'Professional Email', description: 'Write an email to your manager about the progress of the current project.', category: 'email', level: 5 },
-  { id: 'wt-2', title: 'Bug Report', description: 'Write a bug report describing a technical issue you found in the application.', category: 'technical', level: 5 },
-  { id: 'wt-3', title: 'Feature Proposal', description: 'Write a short proposal for a new feature that could improve the system.', category: 'professional', level: 6 },
-  { id: 'wt-4', title: 'Daily Standup', description: 'Describe what you did yesterday and what you will do today.', category: 'professional', level: 2 },
-  { id: 'wt-5', title: 'Code Review', description: 'Explain why a certain piece of code needs improvement.', category: 'technical', level: 3 },
-  { id: 'wt-6', title: 'Meeting Minutes', description: 'Summarize the key points discussed in a technical meeting.', category: 'professional', level: 4 }
+  { id: 'wt-1', title: 'Professional Email to Shipper', description: 'Write an email to a shipper to confirm cargo details, pickup date, and required documents.', category: 'email', level: 5 },
+  { id: 'wt-2', title: 'Delay Notice', description: 'Write a short notice to inform a customer about a shipment delay and propose a revised ETA.', category: 'professional', level: 3 },
+  { id: 'wt-3', title: 'Incident Report', description: 'Describe a logistics incident at the warehouse and explain immediate corrective actions.', category: 'technical', level: 5 },
+  { id: 'wt-4', title: 'Daily Operations Update', description: 'Summarize today\'s loading, dispatch, and delivery status for your supervisor.', category: 'professional', level: 2 },
+  { id: 'wt-5', title: 'Route Optimization Suggestion', description: 'Propose improvements to reduce delivery time and fuel cost on a regular route.', category: 'technical', level: 4 },
+  { id: 'wt-6', title: 'Warehouse Improvement Proposal', description: 'Write a structured proposal to improve warehouse workflow, safety, and inventory accuracy.', category: 'professional', level: 6 }
 ];
