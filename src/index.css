@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
 @import "tailwindcss";
+@custom-variant dark (&:where(html, html *));
 
 @theme {
   --font-sans: "Manrope", "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
@@ -65,7 +66,16 @@
       radial-gradient(40% 32% at 10% 18%, rgba(255, 122, 0, 0.14), transparent 70%),
       radial-gradient(36% 28% at 88% 70%, rgba(255, 166, 77, 0.12), transparent 72%);
     filter: blur(10px);
+    opacity: 1;
     animation: glowDrift 11s ease-in-out infinite;
+  }
+
+  .dark body::before {
+    opacity: 0.65;
+  }
+
+  .dark body::after {
+    opacity: 1;
   }
 }
 

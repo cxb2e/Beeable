@@ -627,6 +627,12 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
     'Nguyễn Hoàng Bảo'
   ];
 
+  const mentors = [
+    'Mrs. Văng Thị Kim Anh',
+    'Ms. Lê Dương Ngọc Trân',
+    'Mr. Nguyễn Thanh Tâm'
+  ];
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="cute-card p-8 lg:p-12 overflow-hidden relative">
@@ -697,6 +703,44 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
                 <div className="mt-6 space-y-2">
                   <p className="font-black text-white text-xl leading-tight">{member}</p>
                   {/* <p className="text-xs uppercase tracking-[0.25em] text-orange-300 font-bold">{titles[index]}</p> */}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="cute-card p-8 space-y-6">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-black text-white">Mentor</h2>
+            <p className="text-sm text-slate-400 mt-1">Đội ngũ cố vấn chuyên môn đồng hành cùng Beeable</p>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-5">
+          {mentors.map((mentor) => {
+            const initials = mentor
+              .split(' ')
+              .filter(Boolean)
+              .slice(0, 2)
+              .map(part => part[0])
+              .join('')
+              .toUpperCase();
+
+            return (
+              <div
+                key={mentor}
+                className="rounded-[2.5rem] border border-orange-500/20 bg-orange-500/5 p-6 lg:p-8 text-center shadow-xl shadow-black/10 hover:-translate-y-1 transition-transform"
+              >
+                <div className="mx-auto w-28 h-28 rounded-full bg-gradient-to-br from-amber-200 via-orange-400 to-orange-600 p-[4px] shadow-2xl shadow-orange-500/20">
+                  <div className="w-full h-full rounded-full bg-[#111111] flex items-center justify-center text-white font-black text-2xl tracking-wide overflow-hidden">
+                    <span>{initials}</span>
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-2">
+                  <p className="font-black text-white text-xl leading-tight">{mentor}</p>
                 </div>
               </div>
             );
