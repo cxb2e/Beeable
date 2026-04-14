@@ -27,7 +27,8 @@ import {
   GameQuestion,
   SpeakingPrompt,
   WritingTopic,
-  UserTask
+  UserTask,
+  VocabularyItem
 } from './types';
 import {
   LEXICAL_KNOWLEDGE,
@@ -36,7 +37,10 @@ import {
   GAME_QUESTIONS,
   SPEAKING_PROMPTS,
   WRITING_TOPICS,
-  DICTATION_SENTENCES
+  DICTATION_SENTENCES,
+  LOGISTICS_VOCABULARY,
+  COLLOCATION_VOCABULARY,
+  TECHNICAL_VOCABULARY
 } from './constants';
 import {
   RANKS,
@@ -157,10 +161,11 @@ const HeaderMenu = ({ activeTab, setActiveTab, isAdmin, isOpen, setIsOpen }: {
   const aboutItem = { id: 'about', label: 'Về chúng tôi', icon: Heart };
 
   const exploreItems = [
-    { id: 'expeditions', label: 'Thám hiểm', icon: Rocket },
+     { id: 'vocabulary', label: 'Từ vựng', icon: BookOpen },
     { id: 'logistics', label: 'Logistics', icon: Truck },
     { id: 'speaking', label: 'Phát âm', icon: Mic },
     { id: 'writing', label: 'Luyện viết', icon: PenTool },
+     { id: 'gamezone', label: 'Game Zone', icon: Gamepad2 },
   ];
 
   if (isAdmin) {
@@ -426,7 +431,7 @@ const HeaderMenu = ({ activeTab, setActiveTab, isAdmin, isOpen, setIsOpen }: {
   const menuItems = [
     { id: 'home', label: 'Trang chủ', icon: Home },
     { id: 'about', label: 'Về chúng tôi', icon: Heart },
-    { id: 'expeditions', label: 'Thám hiểm', icon: Rocket },
+    { id: 'gamezone', label: 'Game Zone', icon: Gamepad2 },
     { id: 'logistics', label: 'Logistics', icon: Truck },
     { id: 'speaking', label: 'Phát âm', icon: Mic },
     { id: 'writing', label: 'Luyện viết', icon: PenTool },
@@ -587,7 +592,7 @@ const BeeableBanner = () => {
             Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-orange-500">Beeable</span>
           </h1>
           <p className="mx-auto max-w-2xl text-sm sm:text-base lg:text-lg font-medium leading-relaxed text-orange-100/75 lg:mx-0">
-            Nền tảng ESP tích hợp AI cho học tập chuyên ngành, được thiết kế để biến nhu cầu học thực tế thành kết quả rõ ràng và đo được.
+            Nơi khơi gợi cảm hứng học tiếng anh chuyên ngành, đưa bạn lên đỉnh cao của học vấn.
           </p>
         </div>
 
@@ -622,16 +627,29 @@ const BeeableBanner = () => {
 
 const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => void }) => {
   const teamMembers = [
-    'Nguyễn Đình Huỳnh',
     'Trần Thị Thùy Dương',
-    'Nguyễn Hoàng Bảo'
+    'Nguyễn Hoàng Bảo',
+    'Nguyễn Đình Huỳnh'
   ];
 
+  const teamMemberPhotos: Record<string, string> = {
+    'Nguyễn Đình Huỳnh': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141232/Gemini_Generated_Image_rmbpkjrmbpkjrmbp_h0e0ll.png',
+    'Trần Thị Thùy Dương': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141227/Gemini_Generated_Image_18i3z318i3z318i3_bf31pt.png',
+    'Nguyễn Hoàng Bảo': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141228/Gemini_Generated_Image_kn8n5lkn8n5lkn8n_klqmca.png'
+  };
+
+
   const mentors = [
-    'Mrs. Văng Thị Kim Anh',
     'Ms. Lê Dương Ngọc Trân',
-    'Mr. Nguyễn Thanh Tâm'
+    'Mr. Nguyễn Thanh Tâm',
+    'Ms. Văng Thị Kim Anh'
   ];
+
+  const mentorPhotos: Record<string, string> = {
+    'Ms. Văng Thị Kim Anh': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141228/Gemini_Generated_Image_qofjdrqofjdrqofj_kzmild.png',
+    'Ms. Lê Dương Ngọc Trân': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141227/Gemini_Generated_Image_h6u8gsh6u8gsh6u8_khzjj6.png',
+    'Mr. Nguyễn Thanh Tâm': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141227/Gemini_Generated_Image_43y2hf43y2hf43y2_nc6cc1.png'
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -684,6 +702,7 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
               .map(part => part[0])
               .join('')
               .toUpperCase();
+            const teamMemberPhoto = teamMemberPhotos[member];
 
             // const titles = [
              
@@ -696,7 +715,17 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
               >
                 <div className="mx-auto w-28 h-28 rounded-full bg-gradient-to-br from-orange-300 via-orange-500 to-amber-600 p-[4px] shadow-2xl shadow-orange-500/20">
                   <div className="w-full h-full rounded-full bg-[#111111] flex items-center justify-center text-white font-black text-2xl tracking-wide overflow-hidden">
-                    <span>{initials}</span>
+                    {teamMemberPhoto ? (
+                      <img
+                        src={teamMemberPhoto}
+                        alt={member}
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: 'center top' }}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span>{initials}</span>
+                    )}
                   </div>
                 </div>
 
@@ -727,6 +756,7 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
               .map(part => part[0])
               .join('')
               .toUpperCase();
+            const mentorPhoto = mentorPhotos[mentor];
 
             return (
               <div
@@ -735,7 +765,17 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
               >
                 <div className="mx-auto w-28 h-28 rounded-full bg-gradient-to-br from-amber-200 via-orange-400 to-orange-600 p-[4px] shadow-2xl shadow-orange-500/20">
                   <div className="w-full h-full rounded-full bg-[#111111] flex items-center justify-center text-white font-black text-2xl tracking-wide overflow-hidden">
-                    <span>{initials}</span>
+                    {mentorPhoto ? (
+                      <img
+                        src={mentorPhoto}
+                        alt={mentor}
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: 'center top' }}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span>{initials}</span>
+                    )}
                   </div>
                 </div>
 
@@ -1281,7 +1321,12 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab }: {
             <span className="font-black text-slate-700 dark:text-slate-200">{userProfile?.coins || 0}</span>
           </div>
           {userProfile?.photoURL && (
-            <img src={userProfile.photoURL} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-brand-pink" referrerPolicy="no-referrer" />
+            <div className="relative">
+              <img src={userProfile.photoURL} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-brand-pink" referrerPolicy="no-referrer" />
+              <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-brand-indigo text-black text-[10px] font-black flex items-center justify-center border border-black/30" title={`Cấp ${rank.level}: ${rank.label}`}>
+                {rank.icon}
+              </span>
+            </div>
           )}
         </div>
       </div>
@@ -1356,7 +1401,7 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab }: {
             {priorityTask ? "Tiếp tục hành trình chinh phục thuật ngữ IT hôm nay!" : "Bạn đã hoàn thành tất cả nhiệm vụ chuyên ngành."}
           </p>
           <button 
-            onClick={() => setActiveTab(priorityTask ? 'tasks' : 'expeditions')}
+            onClick={() => setActiveTab(priorityTask ? 'tasks' : 'gamezone')}
             className="bg-white text-brand-indigo px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-indigo-50 transition-all"
           >
             {priorityTask ? "Execute" : "Explore More"}
@@ -1397,23 +1442,23 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab }: {
 
       {/* Module Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <button onClick={() => setActiveTab('expeditions')} className="cute-card p-8 flex flex-col items-center text-center gap-4 group">
+        <button onClick={() => setActiveTab('gamezone')} className="cute-card p-8 flex flex-col items-center text-center gap-4 group">
           <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
             <BookOpen size={32} />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-slate-800 dark:text-white">Từ vựng IT</h3>
+            <h3 className="font-bold text-lg text-slate-800 dark:text-white">Từ vựng chuyên ngành</h3>
             <p className="text-xs text-brand-indigo dark:text-indigo-400 font-bold">Mở khóa thuật toán</p>
           </div>
         </button>
 
-        <button onClick={() => setActiveTab('expeditions')} className="cute-card p-8 flex flex-col items-center text-center gap-4 group">
+        <button onClick={() => setActiveTab('gamezone')} className="cute-card p-8 flex flex-col items-center text-center gap-4 group">
           <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 rounded-2xl flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
-            <PenTool size={32} />
+            <Gamepad2 size={32} />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-slate-800 dark:text-white">Kỹ thuật</h3>
-            <p className="text-xs text-brand-indigo dark:text-indigo-400 font-bold">Tài liệu chuyên sâu</p>
+            <h3 className="font-bold text-lg text-slate-800 dark:text-white">Game Zone</h3>
+            <p className="text-xs text-brand-indigo dark:text-indigo-400 font-bold">Luyện tập nhanh</p>
           </div>
         </button>
 
@@ -1439,16 +1484,16 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab }: {
       </div>
 
       {/* Large Exam CTA */}
-      <button onClick={() => setActiveTab('expeditions')} className="cute-card p-6 lg:p-12 w-full flex flex-col items-center gap-6 group relative overflow-hidden">
+      <button onClick={() => setActiveTab('gamezone')} className="cute-card p-6 lg:p-12 w-full flex flex-col items-center gap-6 group relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4">
           <div className="bg-brand-yellow text-white text-[10px] font-black px-3 py-1 rounded-full animate-pulse">NEW MISSION</div>
         </div>
         <div className="w-16 h-16 lg:w-24 lg:h-24 bg-indigo-50 dark:bg-indigo-900/20 rounded-3xl flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform">
-          <Rocket size={40} className="lg:w-12 lg:h-12" />
+          <Gamepad2 size={40} className="lg:w-12 lg:h-12" />
         </div>
         <div className="text-center">
-          <h2 className="text-2xl lg:text-3xl font-black mb-2 dark:text-white">Thám Hiểm Chuyên Ngành</h2>
-          <p className="text-sm lg:text-base text-slate-500 dark:text-slate-400">Chinh phục kho tàng thuật ngữ IT, Y khoa, Kỹ thuật...</p>
+          <h2 className="text-2xl lg:text-3xl font-black mb-2 dark:text-white">Game Zone</h2>
+          <p className="text-sm lg:text-base text-slate-500 dark:text-slate-400">Chinh phục nhanh các thử thách học tập.</p>
         </div>
       </button>
 
@@ -1593,6 +1638,314 @@ const TasksView = ({ userId, tasks }: { userId: string, tasks: UserTask[] }) => 
           )}
         </div>
       </div>
+    </div>
+  );
+};
+
+// --- Vocabulary View ---
+const VocabularyView = () => {
+  const [activeSection, setActiveSection] = useState<'core' | 'collocations' | 'technical' | 'grammar'>('core');
+  const [selectedVocab, setSelectedVocab] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const sections = {
+    core: {
+      label: 'Core terms',
+      title: 'Từ vựng cốt lõi',
+      description: 'Danh sách thuật ngữ logistics cốt lõi kèm chi tiết đầy đủ.',
+      items: LOGISTICS_VOCABULARY
+    },
+    collocations: {
+      label: 'Collocations',
+      title: 'Collocations',
+      description: 'Các cụm từ thường gặp dùng trong ngữ cảnh logistics và kinh doanh.',
+      items: COLLOCATION_VOCABULARY
+    },
+    technical: {
+      label: 'Thuật ngữ chuyên ngành',
+      title: 'Thuật ngữ chuyên ngành',
+      description: 'Các thuật ngữ chuyên ngành logistics và vận tải trong hình bạn gửi.',
+      items: TECHNICAL_VOCABULARY
+    },
+    grammar: {
+      label: 'Cấu trúc ngữ pháp',
+      title: 'Cấu trúc ngữ pháp',
+      description: 'Các cấu trúc ngữ pháp quan trọng được gộp vào cùng tab từ vựng để học liền mạch.',
+      items: GRAMMAR_STRUCTURES
+    }
+  } as const;
+
+  const isGrammarSection = activeSection === 'grammar';
+  const activeItems = sections[activeSection].items as Array<VocabularyItem | TheoryItem>;
+
+  const filtered = isGrammarSection
+    ? activeItems.filter((item) => {
+        const grammarItem = item as TheoryItem;
+        return grammarItem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          grammarItem.content.toLowerCase().includes(searchTerm.toLowerCase());
+      })
+    : activeItems.filter((item) => {
+        const vocabItem = item as VocabularyItem;
+        return vocabItem.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vocabItem.meaningVietnamese.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+  
+  const selected = selectedVocab
+    ? activeItems.find((vocab) => vocab.id === selectedVocab)
+    : null;
+
+  const handleSwitchSection = (section: 'core' | 'collocations' | 'technical' | 'grammar') => {
+    setActiveSection(section);
+    setSelectedVocab(null);
+    setSearchTerm('');
+  };
+
+  if (selected) {
+    const grammarSelected = selected as TheoryItem;
+    const vocabSelected = selected as VocabularyItem;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="space-y-6"
+      >
+        <button
+          onClick={() => setSelectedVocab(null)}
+          className="flex items-center gap-2 px-4 py-2 text-brand-indigo font-bold hover:bg-orange-500/10 rounded-lg transition-all"
+        >
+          <ChevronLeft size={20} />
+          Quay lại
+        </button>
+
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {Object.entries(sections).map(([sectionKey, section]) => (
+            <button
+              key={sectionKey}
+              onClick={() => handleSwitchSection(sectionKey as 'core' | 'collocations' | 'technical' | 'grammar')}
+              className={cn(
+                'px-5 py-3 rounded-2xl font-black transition-all whitespace-nowrap',
+                activeSection === sectionKey
+                  ? 'bg-brand-indigo text-white shadow-lg shadow-indigo-100 dark:shadow-none'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600'
+              )}
+            >
+              {section.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="cute-card p-8 space-y-8">
+          {isGrammarSection ? (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-4xl font-black text-brand-indigo mb-2">{grammarSelected.title}</h2>
+                    <p className="text-sm font-black uppercase tracking-widest text-slate-400">Cấu trúc ngữ pháp</p>
+                  </div>
+                  <div className="w-12 h-12 bg-brand-indigo/10 rounded-full flex items-center justify-center text-brand-indigo">
+                    <PenTool size={28} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-6">
+                <div className="whitespace-pre-wrap text-slate-800 dark:text-slate-100 leading-relaxed font-bold text-base">
+                  {grammarSelected.content}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-4xl font-black text-brand-indigo mb-2">{vocabSelected.term}</h2>
+                    {vocabSelected.pronunciation && (
+                      <p className="text-lg text-slate-500 dark:text-slate-400 font-bold italic">{vocabSelected.pronunciation}</p>
+                    )}
+                  </div>
+                  <div className="w-12 h-12 bg-brand-indigo/10 rounded-full flex items-center justify-center text-brand-indigo">
+                    <BookOpen size={28} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <tbody>
+                    <tr>
+                      <td className="px-4 py-3 bg-slate-50 dark:bg-slate-900/50 font-black text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 min-w-[200px]">
+                        Definition in English
+                      </td>
+                      <td className="px-4 py-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100">
+                        {vocabSelected.definitionEnglish}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-slate-50 dark:bg-slate-900/50 font-black text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        Meaning in Vietnamese
+                      </td>
+                      <td className="px-4 py-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-bold text-brand-indigo">
+                        {vocabSelected.meaningVietnamese}
+                      </td>
+                    </tr>
+                    {vocabSelected.examplesInContext.length > 0 && (
+                      <tr>
+                        <td className="px-4 py-3 bg-slate-50 dark:bg-slate-900/50 font-black text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          Examples in context
+                        </td>
+                        <td className="px-4 py-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100">
+                          <ul className="space-y-2">
+                            {vocabSelected.examplesInContext.map((example: string, idx: number) => (
+                              <li key={idx} className="list-disc list-inside">
+                                {example}
+                              </li>
+                            ))}
+                          </ul>
+                        </td>
+                      </tr>
+                    )}
+                    {vocabSelected.relatedWordForms.length > 0 && (
+                      <tr>
+                        <td className="px-4 py-3 bg-slate-50 dark:bg-slate-900/50 font-black text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          Related word forms
+                        </td>
+                        <td className="px-4 py-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100">
+                          <ul className="space-y-2">
+                            {vocabSelected.relatedWordForms.map((form: any, idx: number) => (
+                              <li key={idx}>
+                                <span className="font-bold text-brand-indigo">{form.form}</span>: {form.meaning}
+                              </li>
+                            ))}
+                          </ul>
+                        </td>
+                      </tr>
+                    )}
+                    {vocabSelected.notes && (
+                      <tr>
+                        <td className="px-4 py-3 bg-slate-50 dark:bg-slate-900/50 font-black text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          Notes
+                        </td>
+                        <td className="px-4 py-3 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100">
+                          {vocabSelected.notes}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="cute-card p-6 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-brand-indigo/20 rounded-lg flex items-center justify-center text-brand-indigo">
+            <BookOpen size={24} />
+          </div>
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white">Từ vựng Logistics</h2>
+        </div>
+        <p className="text-slate-600 dark:text-slate-400 font-bold">
+          Bấm từng từ để xem đầy đủ nội dung. Các nhóm từ được tách riêng ngay trong tab này.
+        </p>
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {Object.entries(sections).map(([sectionKey, section]) => (
+            <button
+              key={sectionKey}
+              onClick={() => handleSwitchSection(sectionKey as 'core' | 'collocations' | 'technical' | 'grammar')}
+              className={cn(
+                'px-5 py-3 rounded-2xl font-black transition-all whitespace-nowrap',
+                activeSection === sectionKey
+                  ? 'bg-brand-indigo text-white shadow-lg shadow-indigo-100 dark:shadow-none'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600'
+              )}
+            >
+              {section.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-bold">
+          {sections[activeSection].description}
+        </p>
+      </div>
+
+      <div className="cute-card p-6">
+        <input
+          type="text"
+          placeholder={`Tìm kiếm trong ${sections[activeSection].label.toLowerCase()}...`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 font-bold focus:border-brand-indigo outline-none transition-all"
+        />
+      </div>
+
+      {activeSection === 'grammar' ? (
+        <div className="grid gap-4">
+          {filtered.map((item: any) => (
+            <motion.button
+              key={item.id}
+              onClick={() => setSelectedVocab(item.id)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.01 }}
+              className="cute-card p-6 text-left hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between gap-4 mb-3">
+                <h3 className="text-lg font-black text-brand-indigo">{item.title}</h3>
+                <span className="text-xs font-black uppercase tracking-widest text-slate-400">Grammar</span>
+              </div>
+              <div className="text-sm text-slate-700 dark:text-slate-300 font-bold line-clamp-3 whitespace-pre-wrap">
+                {item.content}
+              </div>
+              <div className="flex items-center gap-2 mt-4 text-brand-indigo text-sm font-bold">
+                Xem chi tiết
+                <ChevronRight size={16} />
+              </div>
+            </motion.button>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((vocab: any) => (
+            <motion.button
+              key={vocab.id}
+              onClick={() => setSelectedVocab(vocab.id)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.02 }}
+              className="cute-card p-6 text-left hover:shadow-lg transition-all"
+            >
+              <h3 className="text-lg font-black text-brand-indigo mb-2">{vocab.term}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 font-bold italic mb-3">
+                {vocab.pronunciation || ' '}
+              </p>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-bold line-clamp-2">
+                {vocab.meaningVietnamese}
+              </p>
+              <div className="flex items-center gap-2 mt-4 text-brand-indigo text-sm font-bold">
+                Xem chi tiết
+                <ChevronRight size={16} />
+              </div>
+            </motion.button>
+          ))}
+        </div>
+      )}
+
+      {filtered.length === 0 && (
+        <div className="cute-card p-12 text-center space-y-4">
+          <Search size={48} className="mx-auto text-slate-400" />
+          <p className="text-xl font-bold text-slate-600 dark:text-slate-400">
+            Không tìm thấy từ vựng nào
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -3615,11 +3968,82 @@ const AdminPanel = ({
   );
 };
 
+type AppRoute =
+  | 'home'
+  | 'leaderboard'
+  | 'tasks'
+  | 'gamezone'
+  | 'logistics'
+  | 'speaking'
+  | 'writing'
+  | 'vocabulary'
+  | 'profile'
+  | 'settings'
+  | 'admin'
+  | 'about';
+
+const APP_ROUTES: AppRoute[] = [
+  'home',
+  'leaderboard',
+  'tasks',
+  'gamezone',
+  'logistics',
+  'speaking',
+  'writing',
+  'vocabulary',
+  'profile',
+  'settings',
+  'admin',
+  'about'
+];
+
+const isAppRoute = (value: string): value is AppRoute => {
+  return APP_ROUTES.includes(value as AppRoute);
+};
+
+const getRouteFromPath = (pathname: string): AppRoute => {
+  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+
+  switch (normalizedPath) {
+    case '/leaderboard':
+      return 'leaderboard';
+    case '/tasks':
+      return 'tasks';
+    case '/expeditions':
+      return 'gamezone';
+    case '/gamezone':
+      return 'gamezone';
+    case '/logistics':
+      return 'logistics';
+    case '/speaking':
+      return 'speaking';
+    case '/writing':
+      return 'writing';
+    case '/vocabulary':
+      return 'vocabulary';
+    case '/profile':
+      return 'profile';
+    case '/settings':
+      return 'settings';
+    case '/admin':
+      return 'admin';
+    case '/about':
+      return 'about';
+    case '/':
+    default:
+      return 'home';
+  }
+};
+
+const getPathFromRoute = (route: AppRoute) => {
+  return route === 'home' ? '/' : `/${route}`;
+};
+
 // --- Main App ---
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTabState] = useState<AppRoute>(() => getRouteFromPath(window.location.pathname));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState<UserTask[]>([]);
@@ -3636,6 +4060,25 @@ export default function App() {
     return localStorage.getItem('darkMode') === 'true';
   });
 
+  const setActiveTab = (nextTab: string) => {
+    const nextRoute = isAppRoute(nextTab) ? nextTab : 'home';
+    setActiveTabState(nextRoute);
+
+    const nextPath = getPathFromRoute(nextRoute);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({ route: nextRoute }, '', nextPath);
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveTabState(getRouteFromPath(window.location.pathname));
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -3646,6 +4089,7 @@ export default function App() {
   }, [isDarkMode]);
 
   const isAdmin = user?.email === 'nguyenthanhtam.it2013@gmail.com' || userProfile?.role === 'teacher';
+  const userRank = getRank(userProfile?.xp || 0);
 
   useEffect(() => {
     if (!user) return;
@@ -3869,6 +4313,9 @@ export default function App() {
                         <span>{(userProfile?.displayName || user.email || 'U').charAt(0).toUpperCase()}</span>
                       )}
                     </button>
+                    <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-brand-indigo text-black text-[10px] font-black flex items-center justify-center border border-black/30" title={`Cấp ${userRank.level}: ${userRank.label}`}>
+                      {userRank.icon}
+                    </span>
 
                     <div className={cn(
                       "absolute right-0 mt-2 w-48 rounded-xl border border-orange-500/30 bg-[#121212] shadow-2xl overflow-hidden transition-all duration-150 z-[80]",
@@ -3977,19 +4424,13 @@ export default function App() {
                 className="max-w-6xl mx-auto"
               >
                 {activeTab === 'home' && <HomeView user={user} userProfile={userProfile} tasks={tasks} setActiveTab={setActiveTab} />}
-                {activeTab === 'expeditions' && (
-                  <ExpeditionsView 
-                    userId={user.uid} 
-                    userProfile={userProfile} 
-                    gameQuestions={gameQuestions.length > 0 ? gameQuestions : GAME_QUESTIONS} 
-                    isAdmin={isAdmin} 
-                    speakingPrompts={speakingPrompts.length > 0 ? speakingPrompts : SPEAKING_PROMPTS}
-                    writingTopics={writingTopics.length > 0 ? writingTopics : WRITING_TOPICS}
-                    dictationSentences={dictationSentences.length > 0 ? dictationSentences : DICTATION_SENTENCES.map((s, i) => ({ id: `ds-${i}`, text: s, order: i }))}
-                    onStartLogistics={() => setActiveTab('logistics')}
-                  />
-                )}
+                {activeTab === 'gamezone' && <GameZoneView userId={user.uid} userProfile={userProfile} questions={gameQuestions.length > 0 ? gameQuestions : GAME_QUESTIONS} />}
                 {activeTab === 'logistics' && <LogisticsChallenge userId={user.uid} userProfile={userProfile} />}
+                {activeTab === 'vocabulary' && (
+                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <VocabularyView />
+                  </div>
+                )}
                 {activeTab === 'speaking' && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="cute-card p-8">
@@ -4038,12 +4479,17 @@ export default function App() {
                 {activeTab === 'profile' && (
                   <div className="space-y-8">
                     <div className="cute-card p-12 text-center space-y-6">
-                      <img src={userProfile?.photoURL} alt="Avatar" className="w-32 h-32 rounded-full mx-auto border-4 border-brand-pink" referrerPolicy="no-referrer" />
+                      <div className="relative w-fit mx-auto">
+                        <img src={userProfile?.photoURL} alt="Avatar" className="w-32 h-32 rounded-full mx-auto border-4 border-brand-pink" referrerPolicy="no-referrer" />
+                        <span className="absolute -bottom-2 -right-2 px-3 py-1 rounded-full bg-brand-indigo text-black text-xs font-black border-2 border-black/40" title={`Cấp ${userRank.level}: ${userRank.label}`}>
+                          {userRank.icon} {userRank.label}
+                        </span>
+                      </div>
                       <h2 className="text-3xl font-black text-slate-900 dark:text-white">{userProfile?.displayName}</h2>
                       <p className="text-slate-500 dark:text-slate-400 font-bold">{userProfile?.email}</p>
                       <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-8">
                         <div className="space-y-1">
-                          <p className="text-3xl font-black text-brand-pink">1</p>
+                          <p className="text-3xl font-black text-brand-pink">{userProfile?.streak || 0}</p>
                           <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Ngày Streak</p>
                         </div>
                         <div className="space-y-1">
@@ -4051,7 +4497,7 @@ export default function App() {
                           <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Nhiệm vụ xong</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-3xl font-black text-brand-yellow">{gameResults.reduce((acc, curr) => acc + curr.score * 10, 0)}</p>
+                          <p className="text-3xl font-black text-brand-yellow">{userProfile?.xp || 0}</p>
                           <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Điểm XP</p>
                         </div>
                       </div>

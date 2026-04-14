@@ -89,3 +89,15 @@ export interface UserTask {
   completed: boolean;
   date: string;
 }
+
+export interface VocabularyItem {
+  id: string;
+  term: string;
+  pronunciation?: string;
+  definitionEnglish: string;
+  meaningVietnamese: string;
+  examplesInContext: string[];
+  relatedWordForms: { form: string; meaning: string }[];
+  notes?: string;
+  order?: number;
+}
