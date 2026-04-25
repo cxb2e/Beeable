@@ -1445,7 +1445,7 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab, onSearchVocabulary }
             }
           }}
           placeholder="Nhập từ vựng cần tra cứu..." 
-          className="w-full pl-14 pr-24 py-5 bg-[#FFF9E5] text-slate-900 dark:text-white placeholder-slate-400 rounded-3xl border-2 border-[#FFF0B3] focus:border-brand-yellow focus:ring-0 transition-all font-medium"
+          className="w-full pl-14 pr-24 py-5 bg-[#FFF9E5] text-slate-900 dark:text-dark placeholder-slate-400 rounded-3xl border-2 border-[#FFF0B3] focus:border-brand-yellow focus:ring-0 transition-all font-medium"
         />
         <button
           onClick={handleHomeSearch}

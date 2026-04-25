@@ -9,7 +9,7 @@
     "dev:server": "tsx server/index.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "tsx server/index.ts",
+    "start": "vite preview --host --port $PORT",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
