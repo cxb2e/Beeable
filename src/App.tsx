@@ -92,12 +92,23 @@ import {
   FileUp,
   Download,
   Truck,
-  Brain
+  Brain,
+  MessageSquare,
+  Crosshair
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { GoogleGenAI, Type } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 import { cn } from './lib/utils';
+
+const createGeminiClient = () => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing VITE_GEMINI_API_KEY');
+  }
+
+  return new GoogleGenAI({ apiKey });
+};
 
 // --- Error Boundary ---
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
@@ -163,6 +174,7 @@ const HeaderMenu = ({ activeTab, setActiveTab, isAdmin, isOpen, setIsOpen }: {
   const exploreItems = [
      { id: 'vocabulary', label: 'Từ vựng', icon: BookOpen },
     { id: 'logistics', label: 'Logistics', icon: Truck },
+     { id: 'communicative', label: 'Giao tiếp', icon: MessageSquare },
     { id: 'speaking', label: 'Phát âm', icon: Mic },
     { id: 'writing', label: 'Luyện viết', icon: PenTool },
      { id: 'gamezone', label: 'Game Zone', icon: Gamepad2 },
@@ -592,7 +604,7 @@ const BeeableBanner = () => {
             Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-orange-500">Beeable</span>
           </h1>
           <p className="mx-auto max-w-2xl text-sm sm:text-base lg:text-lg font-medium leading-relaxed text-orange-100/75 lg:mx-0">
-            Nơi khơi gợi cảm hứng học tiếng anh chuyên ngành, đưa bạn lên đỉnh cao của học vấn.
+            Nơi khơi gợi cảm hứng học tiếng Anh chuyên ngành, đưa bạn lên đỉnh cao của học vấn.
           </p>
         </div>
 
@@ -633,9 +645,9 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
   ];
 
   const teamMemberPhotos: Record<string, string> = {
-    'Nguyễn Đình Huỳnh': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141232/Gemini_Generated_Image_rmbpkjrmbpkjrmbp_h0e0ll.png',
-    'Trần Thị Thùy Dương': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141227/Gemini_Generated_Image_18i3z318i3z318i3_bf31pt.png',
-    'Nguyễn Hoàng Bảo': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141228/Gemini_Generated_Image_kn8n5lkn8n5lkn8n_klqmca.png'
+    'Nguyễn Đình Huỳnh': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776957801/Gemini_Generated_Image_gq9oeigq9oeigq9o_zkhqq4.png',
+    'Trần Thị Thùy Dương': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776957806/Gemini_Generated_Image_sagwrnsagwrnsagw_kham8d.png',
+    'Nguyễn Hoàng Bảo': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1777081382/Gemini_Generated_Image_81nfcd81nfcd81nf_bqnbmo.png'
   };
 
 
@@ -646,9 +658,9 @@ const AboutUsView = ({ user, onGoHome }: { user: User | null, onGoHome: () => vo
   ];
 
   const mentorPhotos: Record<string, string> = {
-    'Ms. Văng Thị Kim Anh': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141228/Gemini_Generated_Image_qofjdrqofjdrqofj_kzmild.png',
-    'Ms. Lê Dương Ngọc Trân': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141227/Gemini_Generated_Image_h6u8gsh6u8gsh6u8_khzjj6.png',
-    'Mr. Nguyễn Thanh Tâm': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776141227/Gemini_Generated_Image_43y2hf43y2hf43y2_nc6cc1.png'
+    'Ms. Văng Thị Kim Anh': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776957800/Gemini_Generated_Image_kxh8g7kxh8g7kxh8_ffeffd.png',
+    'Ms. Lê Dương Ngọc Trân': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776957800/Gemini_Generated_Image_f9fp3wf9fp3wf9fp_jp2rew.png',
+    'Mr. Nguyễn Thanh Tâm': 'https://res.cloudinary.com/dfa75ewka/image/upload/v1776957803/Gemini_Generated_Image_igyybrigyybrigyy_aqxzfj.png'
   };
 
   return (
@@ -857,7 +869,7 @@ const LogisticsChallenge = ({ userId, userProfile }: { userId: string, userProfi
   const startChallenge = async () => {
     setIsAnalyzing(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = createGeminiClient();
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: "You are an expert in Logistics. Start a short conversation with a student. Begin with a friendly greeting and a simple introductory question (like asking for their name or their background). Do not jump into logistics topics immediately. Use simple English suitable for high school or college students. Avoid complex jargon. Keep it short and professional. Language: English.",
@@ -940,7 +952,7 @@ const LogisticsChallenge = ({ userId, userProfile }: { userId: string, userProfi
     setIsAnalyzing(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = createGeminiClient();
       const history = messages.map(m => `${m.role === 'ai' ? 'AI' : 'User'}: ${m.text}`).join('\n');
       
       const response = await ai.models.generateContent({
@@ -1283,14 +1295,20 @@ Return the result in JSON format:
 };
 
 // --- Home View ---
-const HomeView = ({ user, userProfile, tasks, setActiveTab }: { 
+const HomeView = ({ user, userProfile, tasks, setActiveTab, onSearchVocabulary }: { 
   user: User | null, 
   userProfile: UserProfile | null, 
   tasks: UserTask[],
-  setActiveTab: (tab: string) => void
+  setActiveTab: (tab: string) => void,
+  onSearchVocabulary: (term: string) => void
 }) => {
   const priorityTask = tasks.find(t => !t.completed);
   const rank = userProfile ? getRank(userProfile.xp) : RANKS[0];
+  const [homeSearchTerm, setHomeSearchTerm] = useState('');
+
+  const handleHomeSearch = () => {
+    onSearchVocabulary(homeSearchTerm.trim());
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -1411,31 +1429,28 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab }: {
       </div>
 
       {/* Activity Ticker */}
-      <div className="bg-[#E9F7F2] p-3 rounded-2xl border border-[#D1F0E4] flex items-center gap-3 overflow-hidden">
-        <div className="bg-white p-1.5 rounded-lg shadow-sm">
-          <RefreshCw size={16} className="text-[#34D399]" />
-        </div>
-        <div className="flex-1 whitespace-nowrap overflow-hidden">
-          <div className="flex gap-8 animate-marquee">
-            <p className="text-sm font-medium text-[#065F46]">
-              🔥 <span className="font-bold">Quỳnh Trang</span> vừa hoàn thành: Ôn tập câu sai Ngữ pháp
-            </p>
-            <p className="text-sm font-medium text-[#065F46]">
-              🔥 <span className="font-bold">Minh Anh</span> vừa đạt: 950/990 Tech Master Test 1
-            </p>
-          </div>
-        </div>
-      </div>
+    
 
       {/* Search Bar */}
       <div className="relative">
         <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
         <input 
           type="text" 
+          value={homeSearchTerm}
+          onChange={(e) => setHomeSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleHomeSearch();
+            }
+          }}
           placeholder="Nhập từ vựng cần tra cứu..." 
           className="w-full pl-14 pr-24 py-5 bg-[#FFF9E5] text-slate-900 dark:text-white placeholder-slate-400 rounded-3xl border-2 border-[#FFF0B3] focus:border-brand-yellow focus:ring-0 transition-all font-medium"
         />
-        <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-brand-pink px-6 py-2 rounded-xl font-bold shadow-sm border border-brand-soft-pink">
+        <button
+          onClick={handleHomeSearch}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-brand-pink px-6 py-2 rounded-xl font-bold shadow-sm border border-brand-soft-pink"
+        >
           Tìm
         </button>
       </div>
@@ -1498,23 +1513,7 @@ const HomeView = ({ user, userProfile, tasks, setActiveTab }: {
       </button>
 
       {/* Music Player Mock */}
-      <div className="bg-[#FFF9E5] dark:bg-yellow-900/20 p-6 rounded-3xl border border-[#FFF0B3] dark:border-yellow-900/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4 min-w-0">
-          <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm">
-            <Music size={24} className="text-brand-yellow" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-bold text-brand-pink flex flex-wrap items-center gap-2">
-              Vi Vu - MASON NGUYỄN ft CONGB, WOKEUP
-              <span className="bg-brand-yellow/20 text-brand-yellow text-[10px] px-2 py-0.5 rounded-full">User Rcm</span>
-            </p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">"V"</p>
-          </div>
-        </div>
-        <button className="self-end sm:self-auto w-10 h-10 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow shadow-sm hover:scale-110 transition-transform">
-          <Plus size={24} />
-        </button>
-      </div>
+      
     </div>
   );
 };
@@ -1643,10 +1642,75 @@ const TasksView = ({ userId, tasks }: { userId: string, tasks: UserTask[] }) => 
 };
 
 // --- Vocabulary View ---
-const VocabularyView = () => {
+const VocabularyView = ({ externalSearchTerm }: { externalSearchTerm?: string }) => {
   const [activeSection, setActiveSection] = useState<'core' | 'collocations' | 'technical' | 'grammar'>('core');
   const [selectedVocab, setSelectedVocab] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const stopPronunciation = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  const getPronunciationSpeechText = (item: VocabularyItem) => {
+    const term = item.term.trim();
+    const pronunciation = item.pronunciation?.trim();
+
+    if (pronunciation && /^[A-Z0-9][A-Z0-9\s.-]*$/.test(term) && !pronunciation.startsWith('/')) {
+      return pronunciation;
+    }
+
+    return term;
+  };
+
+  const playPronunciation = (item: VocabularyItem) => {
+    if (item.audioUrl) {
+      const audio = new Audio(item.audioUrl);
+      audio.play().catch((error) => {
+        console.error('Failed to play custom pronunciation audio:', error);
+      });
+      return;
+    }
+
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(getPronunciationSpeechText(item));
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const getVocabImages = (item: VocabularyItem) => {
+    if (item.imageUrls && item.imageUrls.length > 0) {
+      return item.imageUrls;
+    }
+
+    if (item.imageUrl) {
+      return [item.imageUrl];
+    }
+
+    const keyword = encodeURIComponent(`${item.term} logistics`);
+    return [`https://source.unsplash.com/960x640/?${keyword}`];
+  };
+
+  const getPrimaryVocabImage = (item: VocabularyItem) => getVocabImages(item)[0];
+
+  useEffect(() => {
+    return () => {
+      stopPronunciation();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (externalSearchTerm !== undefined) {
+      setSearchTerm(externalSearchTerm);
+      setSelectedVocab(null);
+    }
+  }, [externalSearchTerm]);
   
   const sections = {
     core: {
@@ -1766,11 +1830,49 @@ const VocabularyView = () => {
                       <p className="text-lg text-slate-500 dark:text-slate-400 font-bold italic">{vocabSelected.pronunciation}</p>
                     )}
                   </div>
-                  <div className="w-12 h-12 bg-brand-indigo/10 rounded-full flex items-center justify-center text-brand-indigo">
-                    <BookOpen size={28} />
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => playPronunciation(vocabSelected)}
+                      className="w-12 h-12 bg-brand-indigo text-white rounded-full flex items-center justify-center hover:scale-105 transition-all"
+                      title="Phát âm từ vựng"
+                    >
+                      <Volume2 size={22} />
+                    </button>
+                    <div className="w-12 h-12 bg-brand-indigo/10 rounded-full flex items-center justify-center text-brand-indigo">
+                      <BookOpen size={28} />
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/40">
+                <img
+                  src={getPrimaryVocabImage(vocabSelected)}
+                  alt={`Illustration for ${vocabSelected.term}`}
+                  className="w-full h-64 object-contain"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              {getVocabImages(vocabSelected).length > 1 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {getVocabImages(vocabSelected).map((imageUrl: string, idx: number) => (
+                    <div
+                      key={`${vocabSelected.id}-img-${idx}`}
+                      className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/40"
+                    >
+                      <img
+                        src={imageUrl}
+                        alt={`${vocabSelected.term} image ${idx + 1}`}
+                        className="w-full h-32 object-contain"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
@@ -1914,14 +2016,31 @@ const VocabularyView = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((vocab: any) => (
-            <motion.button
+            <motion.div
               key={vocab.id}
               onClick={() => setSelectedVocab(vocab.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedVocab(vocab.id);
+                }
+              }}
+              role="button"
+              tabIndex={0}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.02 }}
               className="cute-card p-6 text-left hover:shadow-lg transition-all"
             >
+              <div className="mb-4 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/40">
+                <img
+                  src={getPrimaryVocabImage(vocab)}
+                  alt={`Illustration for ${vocab.term}`}
+                  className="w-full h-36 object-contain"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
               <h3 className="text-lg font-black text-brand-indigo mb-2">{vocab.term}</h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 font-bold italic mb-3">
                 {vocab.pronunciation || ' '}
@@ -1929,11 +2048,24 @@ const VocabularyView = () => {
               <p className="text-sm text-slate-700 dark:text-slate-300 font-bold line-clamp-2">
                 {vocab.meaningVietnamese}
               </p>
-              <div className="flex items-center gap-2 mt-4 text-brand-indigo text-sm font-bold">
+              <div className="flex items-center justify-between gap-2 mt-4 text-brand-indigo text-sm font-bold">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playPronunciation(vocab);
+                  }}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-indigo/10 text-brand-indigo hover:bg-brand-indigo hover:text-white transition-all"
+                >
+                  <Volume2 size={14} />
+                  Phát âm
+                </button>
+                <span className="inline-flex items-center gap-2">
                 Xem chi tiết
                 <ChevronRight size={16} />
+                </span>
               </div>
-            </motion.button>
+            </motion.div>
           ))}
         </div>
       )}
@@ -2006,19 +2138,186 @@ const TheoryView = () => {
 
 // --- Game Zone View ---
 const GameZoneView = ({ userId, userProfile, questions }: { userId: string, userProfile: UserProfile | null, questions: GameQuestion[] }) => {
+  const QUESTION_TIME = 15;
+  const MAX_LIVES = 3;
+
   const [gameQuestions, setGameQuestions] = useState<GameQuestion[]>([]);
+  const [isStarted, setIsStarted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
+  const [combo, setCombo] = useState(0);
+  const [maxCombo, setMaxCombo] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [lives, setLives] = useState(MAX_LIVES);
+  const [lastEarnedPoints, setLastEarnedPoints] = useState(0);
+  const [gameStatus, setGameStatus] = useState<'completed' | 'out-of-lives' | null>(null);
+  const [isTimedOut, setIsTimedOut] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  const enterFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      console.error('Unable to enter fullscreen mode:', error);
+    }
+  };
+
+  const exitFullscreen = async () => {
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error('Unable to exit fullscreen mode:', error);
+    }
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current !== null) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const persistGameResult = async (finalScore: number, finalCorrectAnswers: number) => {
+    const xpEarned = Math.max(50, Math.round(finalScore / 10));
+    const coinsEarned = Math.max(10, Math.round(finalScore / 25));
+
+    if (userProfile) {
+      await updateDoc(doc(db, 'users', userId), {
+        xp: increment(xpEarned),
+        coins: increment(coinsEarned)
+      });
+    }
+
+    const result: GameResult = {
+      gameType: 'Game Zone Arcade',
+      score: finalScore,
+      totalQuestions: gameQuestions.length,
+      date: new Date().toISOString()
+    };
+
+    await addDoc(collection(db, `users/${userId}/gameResults`), result);
+  };
+
+  const endGame = async (status: 'completed' | 'out-of-lives', finalScore: number, finalCorrectAnswers: number) => {
+    setGameStatus(status);
+    setShowResult(true);
+    stopTimer();
+
+    try {
+      await persistGameResult(finalScore, finalCorrectAnswers);
+    } catch (error) {
+      console.error('Failed to save arcade game result:', error);
+    }
+  };
+
+  const goToNextQuestion = () => {
+    setCurrentQuestionIndex(i => i + 1);
+    setSelectedOption(null);
+    setIsCorrect(null);
+    setLastEarnedPoints(0);
+    setIsTimedOut(false);
+  };
+
+  const resolveRound = (correct: boolean, chosenOption: string | null, timedOut = false) => {
+    if (selectedOption) return;
+
+    stopTimer();
+    setSelectedOption(chosenOption ?? '__timeout__');
+    setIsCorrect(correct);
+    setIsTimedOut(timedOut);
+
+    const speedBonus = Math.max(0, timeLeft) * 10;
+    const comboBonus = correct ? combo * 20 : 0;
+    const earnedPoints = correct ? 100 + speedBonus + comboBonus : 0;
+
+    const nextScore = score + earnedPoints;
+    const nextCorrectAnswers = correct ? correctAnswers + 1 : correctAnswers;
+    const nextCombo = correct ? combo + 1 : 0;
+    const nextLives = correct ? lives : lives - 1;
+
+    if (correct) {
+      setScore(nextScore);
+      setCorrectAnswers(nextCorrectAnswers);
+      setCombo(nextCombo);
+      setMaxCombo(prev => Math.max(prev, nextCombo));
+      setLastEarnedPoints(earnedPoints);
+    } else {
+      setCombo(0);
+      setLives(nextLives);
+      setLastEarnedPoints(0);
+    }
+
+    window.setTimeout(() => {
+      if (nextLives <= 0) {
+        endGame('out-of-lives', nextScore, nextCorrectAnswers);
+        return;
+      }
+
+      if (currentQuestionIndex < gameQuestions.length - 1) {
+        goToNextQuestion();
+        return;
+      }
+
+      endGame('completed', nextScore, nextCorrectAnswers);
+    }, 900);
+  };
 
   useEffect(() => {
     if (questions.length > 0) {
       const shuffled = [...questions].sort(() => Math.random() - 0.5).slice(0, 10);
       setGameQuestions(shuffled);
+      setCurrentQuestionIndex(0);
+      setScore(0);
+      setShowResult(false);
+      setSelectedOption(null);
+      setIsCorrect(null);
+      setTimeLeft(QUESTION_TIME);
+      setCombo(0);
+      setMaxCombo(0);
+      setCorrectAnswers(0);
+      setLives(MAX_LIVES);
+      setLastEarnedPoints(0);
+      setGameStatus(null);
+      setIsTimedOut(false);
     }
   }, [questions]);
+
+  useEffect(() => {
+    if (!isStarted || showResult || gameQuestions.length === 0 || selectedOption) {
+      return;
+    }
+
+    stopTimer();
+    setTimeLeft(QUESTION_TIME);
+
+    timerRef.current = window.setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          stopTimer();
+          window.setTimeout(() => {
+            resolveRound(false, null, true);
+          }, 0);
+          return 0;
+        }
+
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => stopTimer();
+  }, [currentQuestionIndex, showResult, selectedOption, gameQuestions.length, isStarted]);
+
+  useEffect(() => {
+    return () => stopTimer();
+  }, []);
 
   if (questions.length === 0) {
     return (
@@ -2037,43 +2336,12 @@ const GameZoneView = ({ userId, userProfile, questions }: { userId: string, user
   const currentQuestion = gameQuestions[currentQuestionIndex % gameQuestions.length];
 
   const handleAnswer = async (option: string) => {
-    if (selectedOption) return;
-    setSelectedOption(option);
     const correct = option === currentQuestion.answer;
-    setIsCorrect(correct);
-    if (correct) setScore(s => s + 1);
-
-    setTimeout(async () => {
-      if (currentQuestionIndex < gameQuestions.length - 1) {
-        setCurrentQuestionIndex(i => i + 1);
-        setSelectedOption(null);
-        setIsCorrect(null);
-      } else {
-        setShowResult(true);
-        const finalScore = score + (correct ? 1 : 0);
-        const xpEarned = finalScore * 10;
-        const coinsEarned = finalScore * 2;
-        
-        if (userProfile) {
-          await updateDoc(doc(db, 'users', userId), {
-            xp: increment(xpEarned),
-            coins: increment(coinsEarned)
-          });
-        }
-        
-        // Save result to Firestore
-        const result: GameResult = {
-          gameType: 'General Tech English',
-          score: finalScore,
-          totalQuestions: gameQuestions.length,
-          date: new Date().toISOString()
-        };
-        await addDoc(collection(db, `users/${userId}/gameResults`), result);
-      }
-    }, 3000);
+    resolveRound(correct, option, false);
   };
 
   const resetGame = () => {
+    stopTimer();
     const shuffled = [...questions].sort(() => Math.random() - 0.5).slice(0, 10);
     setGameQuestions(shuffled);
     setCurrentQuestionIndex(0);
@@ -2081,79 +2349,285 @@ const GameZoneView = ({ userId, userProfile, questions }: { userId: string, user
     setShowResult(false);
     setSelectedOption(null);
     setIsCorrect(null);
+    setTimeLeft(QUESTION_TIME);
+    setCombo(0);
+    setMaxCombo(0);
+    setCorrectAnswers(0);
+    setLives(MAX_LIVES);
+    setLastEarnedPoints(0);
+    setGameStatus(null);
+    setIsTimedOut(false);
   };
 
-  if (showResult) {
+  const startGame = async () => {
+    resetGame();
+    setIsStarted(true);
+    await enterFullscreen();
+  };
+
+  const returnToLobby = async () => {
+    stopTimer();
+    setIsStarted(false);
+    await exitFullscreen();
+  };
+
+  if (!isStarted) {
     return (
       <div className="cute-card p-8 lg:p-12 text-center space-y-8">
-        <div className="w-20 h-20 lg:w-24 lg:h-24 bg-brand-yellow rounded-full flex items-center justify-center text-white mx-auto animate-bounce">
-          <Trophy size={40} className="lg:w-12 lg:h-12" />
+        <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-brand-indigo to-indigo-600 rounded-full flex items-center justify-center text-white mx-auto shadow-xl">
+          <Crosshair size={42} className="lg:w-12 lg:h-12" />
         </div>
-        <div>
-          <h2 className="text-3xl lg:text-4xl font-black mb-2 text-slate-900 dark:text-white">Hoàn thành!</h2>
-          <p className="text-lg lg:text-xl text-brand-indigo dark:text-indigo-400 font-black">Bạn đạt được {score}/{gameQuestions.length} điểm</p>
+        <div className="space-y-3">
+          <h2 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">Game Zone: Shooter Mode</h2>
+          <p className="text-slate-500 dark:text-slate-400 font-bold max-w-2xl mx-auto">
+            Bắn vào mục tiêu chứa đáp án đúng trước khi hết giờ. Sai hoặc hết giờ sẽ mất mạng.
+          </p>
         </div>
-        <button 
-          onClick={resetGame}
-          className="cute-button-primary px-12"
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">
+          <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-indigo-500">Thời gian mỗi màn</p>
+            <p className="text-xl font-black text-slate-900 dark:text-white">{QUESTION_TIME}s</p>
+          </div>
+          <div className="bg-pink-50 dark:bg-pink-900/20 p-4 rounded-2xl border border-pink-100 dark:border-pink-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-pink-500">Mạng sống</p>
+            <p className="text-xl font-black text-slate-900 dark:text-white">{MAX_LIVES}</p>
+          </div>
+          <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-2xl border border-orange-100 dark:border-orange-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-orange-500">Combo bonus</p>
+            <p className="text-xl font-black text-slate-900 dark:text-white">Có</p>
+          </div>
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-500">Fullscreen</p>
+            <p className="text-xl font-black text-slate-900 dark:text-white">Tự bật</p>
+          </div>
+        </div>
+
+        <button
+          onClick={startGame}
+          className="cute-button-primary px-12 py-4 text-lg inline-flex items-center gap-3"
         >
-          Chơi lại
+          <Crosshair size={22} /> Bắt đầu trận đấu
         </button>
       </div>
     );
   }
 
+  if (showResult) {
+    const accuracy = gameQuestions.length > 0 ? Math.round((correctAnswers / gameQuestions.length) * 100) : 0;
+
+    return (
+      <div className="cute-card p-8 lg:p-12 text-center space-y-8">
+        <div className={cn(
+          'w-20 h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center text-white mx-auto animate-bounce',
+          gameStatus === 'out-of-lives' ? 'bg-red-500' : 'bg-brand-yellow'
+        )}>
+          <Trophy size={40} className="lg:w-12 lg:h-12" />
+        </div>
+        <div>
+          <h2 className="text-3xl lg:text-4xl font-black mb-2 text-slate-900 dark:text-white">
+            {gameStatus === 'out-of-lives' ? 'Game Over!' : 'Mission Complete!'}
+          </h2>
+          <p className="text-lg lg:text-xl text-brand-indigo dark:text-indigo-400 font-black">Tổng điểm: {score}</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto text-left">
+          <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-indigo-500">Đúng</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">{correctAnswers}/{gameQuestions.length}</p>
+          </div>
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-500">Accuracy</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">{accuracy}%</p>
+          </div>
+          <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-2xl border border-orange-100 dark:border-orange-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-orange-500">Combo cao nhất</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">x{maxCombo}</p>
+          </div>
+          <div className="bg-pink-50 dark:bg-pink-900/20 p-4 rounded-2xl border border-pink-100 dark:border-pink-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-pink-500">Mạng còn</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">{Math.max(0, lives)}</p>
+          </div>
+        </div>
+
+        <button 
+          onClick={startGame}
+          className="cute-button-primary px-12"
+        >
+          Chơi lại từ đầu
+        </button>
+        <button
+          onClick={returnToLobby}
+          className="px-12 py-4 rounded-2xl font-black border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+        >
+          Về sảnh game
+        </button>
+      </div>
+    );
+  }
+
+  const timerPercent = Math.max(0, (timeLeft / QUESTION_TIME) * 100);
+  const targetAnchors = [
+    { left: 22, top: 24 },
+    { left: 50, top: 22 },
+    { left: 78, top: 24 },
+    { left: 28, top: 66 },
+    { left: 50, top: 72 },
+    { left: 72, top: 66 }
+  ];
+
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      <div className="flex justify-between items-center px-4">
-        <span className="font-black text-brand-indigo text-sm lg:text-base">Câu hỏi {currentQuestionIndex + 1}/{gameQuestions.length}</span>
-        <div className="flex gap-1">
-          {gameQuestions.map((_, i) => (
-            <div key={i} className={cn(
-              "w-4 lg:w-8 h-2 rounded-full transition-all",
-              i === currentQuestionIndex ? "bg-brand-indigo" : i < currentQuestionIndex ? "bg-emerald-400" : "bg-slate-200"
-            )} />
-          ))}
+    <div className="fixed inset-0 z-[120] bg-[#04070f] text-white overflow-hidden">
+      <div className="max-w-5xl mx-auto h-full p-3 lg:p-4 flex flex-col gap-3 lg:gap-4">
+        <div className="flex justify-between items-center shrink-0">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] font-black text-indigo-300">Shooter Arena</p>
+            <h2 className="text-2xl lg:text-3xl font-black">Game Zone Combat</h2>
+          </div>
+          <button
+            onClick={returnToLobby}
+            className="px-4 py-2 rounded-xl border border-white/20 text-white/90 hover:bg-white/10 transition-all font-black"
+          >
+            Thoát trận
+          </button>
+        </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3 shrink-0">
+        <div className="bg-white/10 backdrop-blur p-3 lg:p-4 rounded-2xl border border-white/10 flex items-center gap-3">
+          <Trophy size={18} className="text-indigo-300" />
+          <div>
+            <p className="text-[10px] uppercase tracking-widest font-black text-white/60">Điểm</p>
+            <p className="text-lg font-black text-white">{score}</p>
+          </div>
+        </div>
+        <div className="bg-white/10 backdrop-blur p-3 lg:p-4 rounded-2xl border border-white/10 flex items-center gap-3">
+          <Flame size={18} className={combo > 0 ? 'text-orange-300' : 'text-white/40'} />
+          <div>
+            <p className="text-[10px] uppercase tracking-widest font-black text-white/60">Combo</p>
+            <p className="text-lg font-black text-white">x{combo}</p>
+          </div>
+        </div>
+        <div className="bg-white/10 backdrop-blur p-3 lg:p-4 rounded-2xl border border-white/10 flex items-center gap-3">
+          <Clock size={18} className={timeLeft <= 3 ? 'text-red-300' : 'text-indigo-300'} />
+          <div>
+            <p className="text-[10px] uppercase tracking-widest font-black text-white/60">Thời gian</p>
+            <p className={cn('text-lg font-black', timeLeft <= 3 ? 'text-red-300' : 'text-white')}>{timeLeft}s</p>
+          </div>
+        </div>
+        <div className="bg-white/10 backdrop-blur p-3 lg:p-4 rounded-2xl border border-white/10 flex items-center gap-3">
+          <Heart size={18} className="text-pink-300" />
+          <div>
+            <p className="text-[10px] uppercase tracking-widest font-black text-white/60">Mạng</p>
+            <p className="text-lg font-black text-white">{lives}/{MAX_LIVES}</p>
+          </div>
         </div>
       </div>
 
-      <div className="cute-card p-6 lg:p-10 space-y-8">
-        <h3 className="text-xl lg:text-3xl font-black text-center leading-tight text-slate-900 dark:text-white">
+      <div className="px-1 shrink-0">
+        <div className="w-full h-3 bg-white/15 rounded-full overflow-hidden">
+          <div
+            className={cn('h-full transition-all duration-700', timeLeft <= 3 ? 'bg-red-500' : 'bg-brand-indigo')}
+            style={{ width: `${timerPercent}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center px-1 shrink-0">
+        <span className="font-black text-indigo-300 text-sm lg:text-base">Màn {currentQuestionIndex + 1}/{gameQuestions.length}</span>
+        <p className="text-xs lg:text-sm font-black uppercase tracking-widest text-white/50">Shooter Mode</p>
+      </div>
+
+      <div className="rounded-3xl border border-white/15 bg-white/5 backdrop-blur-md p-4 lg:p-6 shadow-2xl flex flex-col gap-3 lg:gap-4 flex-1 min-h-0 overflow-hidden">
+        <h3 className={cn(
+          'text-xl lg:text-2xl font-black text-center leading-tight text-white transition-all shrink-0',
+          timeLeft <= 3 && !selectedOption ? 'animate-pulse' : ''
+        )}>
           {currentQuestion.question}
         </h3>
+
+        {lastEarnedPoints > 0 && selectedOption && isCorrect && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto w-fit px-3 py-1.5 rounded-xl bg-emerald-400/20 text-emerald-200 border border-emerald-300/30 text-sm font-black shrink-0"
+          >
+            +{lastEarnedPoints} điểm
+          </motion.div>
+        )}
+
+        {isTimedOut && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-3 rounded-2xl border-2 border-red-300/30 bg-red-500/15 text-red-200 text-sm font-black text-center shrink-0"
+          >
+            Hết giờ! Bạn mất 1 mạng.
+          </motion.div>
+        )}
 
         {selectedOption && currentQuestion.explanation && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 lg:p-6 bg-brand-indigo/5 dark:bg-brand-indigo/10 rounded-2xl border-2 border-brand-indigo/20"
+            className="p-3 lg:p-4 bg-brand-indigo/10 rounded-2xl border-2 border-brand-indigo/30 shrink-0"
           >
-            <p className="text-[10px] lg:text-xs font-black text-brand-indigo uppercase tracking-widest mb-2 flex items-center gap-2">
+            <p className="text-[10px] lg:text-xs font-black text-indigo-300 uppercase tracking-widest mb-2 flex items-center gap-2">
               <BookOpen size={14} /> Giải thích:
             </p>
-            <p className="text-sm lg:text-base text-slate-900 dark:text-white font-black leading-relaxed">
+            <p className="text-sm lg:text-base text-white font-black leading-relaxed line-clamp-2">
               {currentQuestion.explanation}
             </p>
           </motion.div>
         )}
 
-        <div className="grid gap-3 lg:gap-4">
-          {currentQuestion.options.map((option) => (
-            <button
-              key={option}
-              onClick={() => handleAnswer(option)}
-              disabled={!!selectedOption}
-              className={cn(
-                "w-full p-4 lg:p-6 rounded-2xl font-black text-left transition-all border-2 disabled:opacity-100 text-sm lg:text-base",
-                selectedOption === option 
-                  ? (isCorrect ? "bg-emerald-50 border-emerald-500 text-emerald-900" : "bg-red-50 border-red-500 text-red-900")
-                  : (selectedOption && option === currentQuestion.answer ? "bg-emerald-50 border-emerald-500 text-emerald-900" : "bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-900 dark:text-white hover:border-brand-indigo hover:bg-indigo-50 dark:hover:bg-indigo-900/20")
-              )}
-            >
-              {option}
-            </button>
-          ))}
+        <div className="relative flex-1 min-h-[220px] lg:min-h-[280px] rounded-3xl border border-white/15 bg-[#0a1020]/80 overflow-hidden cursor-crosshair">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -left-10 top-10 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl" />
+            <div className="absolute right-0 bottom-0 w-56 h-56 bg-cyan-500/20 rounded-full blur-3xl" />
+          </div>
+
+          {currentQuestion.options.map((option, idx) => {
+            const anchor = targetAnchors[(idx + currentQuestionIndex) % targetAnchors.length];
+            const floatX = idx % 2 === 0 ? [0, 12, -8, 0] : [0, -14, 10, 0];
+            const floatY = idx % 2 === 0 ? [0, -10, 8, 0] : [0, 10, -8, 0];
+
+            return (
+              <div
+                key={option}
+                className="absolute -translate-x-1/2 -translate-y-1/2"
+                style={{ left: `${anchor.left}%`, top: `${anchor.top}%` }}
+              >
+                <motion.button
+                  onClick={() => handleAnswer(option)}
+                  disabled={!!selectedOption}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={selectedOption
+                    ? { opacity: 1, scale: 1, x: 0, y: 0 }
+                    : { opacity: 1, scale: [1, 1.04, 1], x: floatX, y: floatY }}
+                  transition={selectedOption
+                    ? { duration: 0.2 }
+                    : { duration: 2.6 + (idx % 3) * 0.4, repeat: Infinity, ease: 'easeInOut' }}
+                  className={cn(
+                    'w-36 h-36 lg:w-44 lg:h-44 rounded-full font-black transition-all border-2 disabled:opacity-100 text-[11px] lg:text-xs relative overflow-hidden shadow-xl flex flex-col items-center justify-center text-center px-4',
+                    selectedOption === option
+                      ? (isCorrect ? 'bg-emerald-400/25 border-emerald-300 text-emerald-100' : 'bg-red-400/25 border-red-300 text-red-100')
+                      : (selectedOption && option === currentQuestion.answer ? 'bg-emerald-400/25 border-emerald-300 text-emerald-100' : 'bg-white/10 border-white/25 text-white hover:border-cyan-300 hover:bg-cyan-500/20')
+                  )}
+                >
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute inset-2 rounded-full border border-white/15" />
+                    <div className="absolute inset-5 rounded-full border border-white/10" />
+                  </div>
+                  <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-black text-white/60 mb-1">
+                    <Crosshair size={11} /> Target {idx + 1}
+                  </div>
+                  <div className="leading-tight break-words">{option}</div>
+                </motion.button>
+              </div>
+            );
+          })}
         </div>
+      </div>
       </div>
     </div>
   );
@@ -2332,7 +2806,7 @@ const SpeakingView = ({ userId, userProfile, isAdmin, prompts }: { userId: strin
       setIsAnalyzing(true);
       
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const ai = createGeminiClient();
         const response = await ai.models.generateContent({
           model: "gemini-3-flash-preview",
           contents: `Analyze the pronunciation of the following text.
@@ -2679,7 +3153,7 @@ const WritingView = ({ userId, userProfile, isAdmin, topics, dictationSentences 
     setIsChecking(true);
     setIsPassed(null);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+      const ai = createGeminiClient();
       const prompt = currentLevel === 1 
         ? `Bạn là một giáo viên tiếng Anh. Học sinh đang làm bài chép chính tả (Dictation).
 Câu mẫu: "${targetSentence}"
@@ -2999,8 +3473,532 @@ const ExpeditionsView = ({ userId, userProfile, gameQuestions, isAdmin, speaking
   );
 };
 
+// --- Communicative Competence View ---
+const CommunicativeCompetenceView = ({ userId, userProfile: _userProfile }: { userId: string, userProfile: UserProfile | null }) => {
+  const [activeProject, setActiveProject] = useState<1 | 2 | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [feedback, setFeedback] = useState<any>(null);
+  const [writingText, setWritingText] = useState('');
+  const [timer, setTimer] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startTimer = () => {
+    setTimer(0);
+    timerRef.current = setInterval(() => {
+      setTimer(prev => prev + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const startProject1Recording = () => {
+    setIsRecording(true);
+    setTranscript('');
+    setFeedback(null);
+    startTimer();
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Trình duyệt của bạn không hỗ trợ nhận diện giọng nói.');
+      setIsRecording(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: any) => {
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          setTranscript(prev => prev + event.results[i][0].transcript + ' ');
+        }
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error(event.error);
+      stopProject1();
+    };
+
+    (window as any).recognition = recognition;
+    recognition.start();
+  };
+
+  const stopProject1 = async () => {
+    setIsRecording(false);
+    stopTimer();
+    const recognition = (window as any).recognition;
+    if (recognition) recognition.stop();
+
+    if (transcript.trim().length < 50) {
+      alert('Bài nói quá ngắn. Vui lòng nói ít nhất 1 phút.');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const ai = createGeminiClient();
+      const prompt = `Bạn là một chuyên gia Logistics và đào tạo kỹ năng giao tiếp.
+Học sinh đang thực hiện MINI PROJECT 1: Quảng cáo dịch vụ Logistics của công ty.
+Yêu cầu:
+1. Đại diện công ty Logistics.
+2. Thuyết phục khách hàng sử dụng dịch vụ giá trị gia tăng (VAS).
+3. Sử dụng ít nhất 3 cấu trúc chuyên ngành (ví dụ: "We offer...", "To enhance your supply chain...", "Our value-added services include...").
+4. Bài nói ít nhất 1 phút.
+
+Nội dung học sinh nói (Transcribed): "${transcript}"
+Thời gian nói: ${timer} giây.
+
+Hãy phân tích:
+- Đánh giá nội dung và tính thuyết phục.
+- Kiểm tra các cấu trúc chuyên ngành đã sử dụng.
+- Tìm các từ bị nhận diện sai (mistranscribed) hoặc có vấn đề phát âm dựa trên ngữ cảnh.
+- Đưa ra lời khuyên cải thiện.
+
+Trả về JSON: { 
+  "score": number, 
+  "strengths": string[], 
+  "weaknesses": string[], 
+  "mistranscribedWords": { "word": string, "suggestion": string }[],
+  "feedback": string 
+}`;
+
+      const result = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
+        config: { responseMimeType: 'application/json' }
+      });
+
+      if (!result.text) {
+        throw new Error('Empty AI response for speaking project');
+      }
+
+      setFeedback(JSON.parse(result.text));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const submitProject2 = async () => {
+    if (writingText.split(/\s+/).filter(w => w.length > 0).length < 200) {
+      alert('Email phải dài ít nhất 200 từ.');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const ai = createGeminiClient();
+      const prompt = `Bạn là một chuyên gia Logistics. 
+Học sinh đang thực hiện MINI PROJECT 2: Viết email đề xuất giải pháp Logistics (Super-3PL model).
+Nội dung: Một nhà sản xuất quần áo đang gặp khó khăn khi quản lý quá nhiều nhà cung cấp nhỏ và muốn chuyển sang mô hình "Super-3PL".
+Yêu cầu:
+1. Đề xuất giải pháp "End-to-end solution".
+2. Ít nhất 200 từ.
+3. Chuyên nghiệp, thuyết phục.
+
+Nội dung email: "${writingText}"
+
+Hãy phân tích:
+- Độ dài (đã đạt chưa).
+- Tính thuyết phục của giải pháp "End-to-end" và mô hình Super-3PL.
+- Ngữ pháp, từ vựng chuyên ngành.
+- Cách trình bày email.
+
+Trả về JSON: { 
+  "score": number, 
+  "feedback": string, 
+  "suggestions": string[],
+  "isLengthMet": boolean
+}`;
+
+      const result = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
+        config: { responseMimeType: 'application/json' }
+      });
+
+      if (!result.text) {
+        throw new Error('Empty AI response for writing project');
+      }
+
+      setFeedback(JSON.parse(result.text));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-center gap-4">
+        <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-emerald-500">
+          <MessageSquare size={32} />
+        </div>
+        <div>
+          <h2 className="text-3xl font-black text-brand-indigo">Năng lực giao tiếp</h2>
+          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Mini Projects - Áp dụng thực tế</p>
+        </div>
+      </div>
+
+      {!activeProject ? (
+        <div className="grid md:grid-cols-2 gap-8">
+          <motion.div
+            whileHover={{ y: -5 }}
+            onClick={() => setActiveProject(1)}
+            className="cute-card p-8 cursor-pointer group border-b-8 border-b-brand-pink"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div className="w-16 h-16 bg-pink-50 dark:bg-pink-900/20 rounded-2xl flex items-center justify-center text-brand-pink group-hover:scale-110 transition-transform">
+                <Mic size={32} />
+              </div>
+              <span className="px-4 py-1 bg-pink-100 dark:bg-pink-900/30 text-brand-pink text-[10px] font-black uppercase tracking-widest rounded-full">Speaking Project</span>
+            </div>
+            <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4">MINI PROJECT 1</h3>
+            <p className="text-slate-500 dark:text-slate-400 font-bold mb-6">Quảng cáo dịch vụ Logistics trực tiếp (Verbal Advertisement).</p>
+            <div className="flex items-center gap-2 text-brand-indigo font-black">
+              Bắt đầu ngay <ChevronRight size={20} />
+            </div>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ y: -5 }}
+            onClick={() => setActiveProject(2)}
+            className="cute-card p-8 cursor-pointer group border-b-8 border-b-brand-indigo"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl flex items-center justify-center text-brand-indigo group-hover:scale-110 transition-transform">
+                <PenTool size={32} />
+              </div>
+              <span className="px-4 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-brand-indigo text-[10px] font-black uppercase tracking-widest rounded-full">Writing Project</span>
+            </div>
+            <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4">MINI PROJECT 2</h3>
+            <p className="text-slate-500 dark:text-slate-400 font-bold mb-6">Viết email đề xuất giải pháp Logistics tích hợp (End-to-end solution).</p>
+            <div className="flex items-center gap-2 text-brand-indigo font-black">
+              Bắt đầu ngay <ChevronRight size={20} />
+            </div>
+          </motion.div>
+
+          <div className="md:col-span-2 p-8 bg-brand-yellow/10 rounded-[2.5rem] border-4 border-dashed border-brand-yellow/30 text-center">
+            <h4 className="font-black text-brand-yellow text-lg mb-2 flex items-center justify-center gap-2">
+              <Crown size={20} /> Mẹo hoàn thành dự án
+            </h4>
+            <p className="text-slate-600 dark:text-slate-400 font-medium italic">
+              "Hãy sử dụng các từ vựng và cấu trúc bạn đã học ở các phần Lý thuyết (Theory) để đạt điểm cao từ AI!"
+            </p>
+          </div>
+        </div>
+      ) : activeProject === 1 ? (
+        <div className="cute-card p-8 lg:p-12 space-y-8">
+          <button onClick={() => setActiveProject(null)} className="flex items-center gap-2 text-slate-400 hover:text-slate-600 font-black uppercase text-xs tracking-widest">
+            <ChevronRight size={16} className="rotate-180" /> Quay lại danh sách
+          </button>
+
+          <div className="space-y-4">
+            <h3 className="text-3xl font-black text-slate-900 dark:text-white">DỰ ÁN 1: QUẢNG CÁO DỊCH VỤ LOGISTICS</h3>
+            <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border-2 border-slate-100 dark:border-slate-700">
+              <h4 className="font-black text-brand-indigo mb-3 uppercase text-xs tracking-widest flex items-center gap-2">
+                <Trophy size={16} /> Mục tiêu dự án
+              </h4>
+              <ul className="space-y-2 text-slate-600 dark:text-slate-400 font-bold text-sm lg:text-base list-disc list-inside">
+                <li>Bạn là đại diện công ty Logistics, thuyết phục khách hàng dùng VAS.</li>
+                <li>Sử dụng ít nhất 3 cấu trúc chuyên ngành (Trang 14).</li>
+                <li>Thời lượng bài nói ít nhất 1 phút.</li>
+                <li>Hệ thống sẽ transcribe giọng nói của bạn để AI chấm điểm.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center py-12 space-y-8">
+            <div className="relative">
+              <motion.div
+                animate={isRecording ? { scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] } : {}}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="absolute inset-0 bg-brand-pink rounded-full blur-2xl -z-10"
+              />
+              <button
+                onClick={isRecording ? stopProject1 : startProject1Recording}
+                disabled={isAnalyzing}
+                className={cn(
+                  'w-32 h-32 rounded-full flex items-center justify-center text-white shadow-2xl transition-all hover:scale-105',
+                  isRecording ? 'bg-red-500' : 'bg-brand-pink'
+                )}
+              >
+                {isRecording ? <X size={48} /> : <Mic size={48} />}
+              </button>
+            </div>
+
+            <div className="text-center space-y-2">
+              <p className="text-4xl font-black text-slate-900 dark:text-white">{formatTime(timer)}</p>
+              <p className="font-black uppercase text-sm tracking-widest text-slate-400">
+                {isRecording ? 'Đang ghi âm... Hãy nói đi!' : 'Nhấn để bắt đầu ghi âm'}
+              </p>
+            </div>
+          </div>
+
+          {transcript && (
+            <div className="space-y-4">
+              <h4 className="font-black text-slate-400 uppercase text-xs tracking-widest">Bản ghi (Transcribed Text)</h4>
+              <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border-4 border-slate-100 dark:border-slate-800 shadow-inner min-h-[150px]">
+                <p className="text-xl lg:text-3xl font-black text-slate-900 dark:text-white leading-relaxed">
+                  {transcript}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {isAnalyzing && (
+            <div className="flex flex-col items-center py-10 space-y-4">
+              <RefreshCw className="animate-spin text-brand-indigo" size={48} />
+              <p className="font-black text-brand-indigo uppercase tracking-widest">AI đang phân tích bài nói của bạn...</p>
+            </div>
+          )}
+
+          {feedback && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
+              <div className="cute-card p-10 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-emerald-500 rounded-3xl flex items-center justify-center text-white shadow-lg">
+                      <Trophy size={32} />
+                    </div>
+                    <div>
+                      <h4 className="text-4xl font-black text-emerald-900 dark:text-emerald-100">{feedback.score}/100</h4>
+                      <p className="text-sm font-black text-emerald-600 uppercase tracking-widest">Điểm dự án</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="text-slate-900 dark:text-slate-100 font-bold leading-relaxed prose prose-slate dark:prose-invert max-w-none">
+                    {feedback.feedback}
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-emerald-100 dark:border-emerald-900/30">
+                      <p className="text-xs font-black text-emerald-500 uppercase tracking-widest mb-3">Ưu điểm</p>
+                      <ul className="space-y-2">
+                        {(feedback.strengths || []).map((s: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 text-sm font-bold text-slate-600 dark:text-slate-400">
+                            <CheckCircle2 className="text-emerald-500 shrink-0 mt-1" size={14} /> {s}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-emerald-100 dark:border-emerald-900/30">
+                      <p className="text-xs font-black text-amber-500 uppercase tracking-widest mb-3">Cần cải thiện</p>
+                      <ul className="space-y-2">
+                        {(feedback.weaknesses || []).map((w: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 text-sm font-bold text-slate-600 dark:text-slate-400">
+                            <AlertCircle className="text-amber-500 shrink-0 mt-1" size={14} /> {w}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {(feedback.mistranscribedWords || []).length > 0 && (
+                    <div className="bg-amber-50 dark:bg-amber-900/10 p-8 rounded-[2rem] border-2 border-amber-100 dark:border-amber-900/20">
+                      <h5 className="font-black text-amber-700 dark:text-amber-400 uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
+                        <Mic size={16} /> Từ bị nhận diện sai / Cần chú ý phát âm:
+                      </h5>
+                      <div className="flex flex-wrap gap-3">
+                        {(feedback.mistranscribedWords || []).map((item: any, i: number) => (
+                          <div key={i} className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-amber-200 dark:border-amber-900/30">
+                            <span className="text-red-500 line-through text-sm font-black mr-2">{item.word}</span>
+                            <span className="text-emerald-600 text-sm font-black">→ {item.suggestion}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      ) : (
+        <div className="cute-card p-8 lg:p-12 space-y-8">
+          <button onClick={() => setActiveProject(null)} className="flex items-center gap-2 text-slate-400 hover:text-slate-600 font-black uppercase text-xs tracking-widest">
+            <ChevronRight size={16} className="rotate-180" /> Quay lại danh sách
+          </button>
+
+          <div className="space-y-4">
+            <h3 className="text-3xl font-black text-slate-900 dark:text-white">DỰ ÁN 2: VIẾT EMAIL GIẢI PHÁP LOGISTICS</h3>
+            <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border-2 border-slate-100 dark:border-slate-700">
+              <h4 className="font-black text-brand-indigo mb-3 uppercase text-xs tracking-widest flex items-center gap-2">
+                <Trophy size={16} /> Mục tiêu dự án
+              </h4>
+              <ul className="space-y-2 text-slate-600 dark:text-slate-400 font-bold text-sm lg:text-base list-disc list-inside">
+                <li>Đề xuất mô hình "Super-3PL" cho nhà sản xuất quần áo.</li>
+                <li>Viết giải pháp "End-to-end solution" tích hợp.</li>
+                <li>Độ dài tối thiểu 200 từ.</li>
+                <li>Tham khảo các cấu trúc tại Task 4.4 (Trang 15).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-end">
+              <h4 className="font-black text-slate-400 uppercase text-xs tracking-widest">Soạn thảo Email</h4>
+              <span className={cn(
+                'text-xs font-black uppercase tracking-widest',
+                writingText.split(/\s+/).filter(w => w.length > 0).length >= 200 ? 'text-emerald-500' : 'text-amber-500'
+              )}>
+                Số từ: {writingText.split(/\s+/).filter(w => w.length > 0).length} / 200
+              </span>
+            </div>
+            <textarea
+              value={writingText}
+              onChange={(e) => setWritingText(e.target.value)}
+              placeholder="Dear Mr. Smith, We are writing to propose a comprehensive logistical solution for your burgeoning clothing manufacturing operations..."
+              className="w-full h-[400px] p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border-4 border-slate-100 dark:border-slate-800 focus:border-brand-indigo transition-all font-bold text-lg leading-relaxed shadow-inner text-slate-900 dark:text-white"
+            />
+          </div>
+
+          <button
+            onClick={submitProject2}
+            disabled={isAnalyzing || !writingText.trim()}
+            className="cute-button-primary w-full py-5 text-xl flex items-center justify-center gap-3"
+          >
+            {isAnalyzing ? <RefreshCw className="animate-spin" /> : <Rocket />}
+            {isAnalyzing ? 'AI đang thẩm định Email...' : 'Gửi Email & Nhận phản hồi'}
+          </button>
+
+          {feedback && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="cute-card p-10 bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800"
+            >
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 bg-brand-indigo rounded-3xl flex items-center justify-center text-white shadow-lg text-4xl font-black">
+                  {feedback.score}
+                </div>
+                <div>
+                  <h4 className="text-2xl font-black text-indigo-900 dark:text-indigo-100 italic">Kết quả kiểm tra</h4>
+                  <div className="flex gap-2 mt-1">
+                    {feedback.isLengthMet ? (
+                      <span className="px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black uppercase rounded-md">Đủ độ dài</span>
+                    ) : (
+                      <span className="px-2 py-0.5 bg-amber-500 text-white text-[10px] font-black uppercase rounded-md">Chưa đủ từ</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-6 text-slate-900 dark:text-slate-100 font-bold leading-relaxed prose prose-slate dark:prose-invert max-w-none">
+                <ReactMarkdown>{feedback.feedback}</ReactMarkdown>
+
+                {(feedback.suggestions || []).length > 0 && (
+                  <div className="mt-8 pt-8 border-t border-indigo-100 dark:border-indigo-900/30">
+                    <p className="text-xs font-black text-indigo-500 uppercase tracking-widest mb-4">Gợi ý từ chuyên gia:</p>
+                    <div className="grid gap-4">
+                      {(feedback.suggestions || []).map((s: string, i: number) => (
+                        <div key={i} className="flex gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-indigo-100 dark:border-indigo-900/20">
+                          <div className="w-6 h-6 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-brand-indigo shrink-0">
+                            <PenTool size={12} />
+                          </div>
+                          <p className="text-sm">{s}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- Leaderboard View ---
-const LeaderboardView = () => {
+const LeaderboardView = ({ currentUserId }: { currentUserId: string }) => {
+  type LeaderboardMetric = 'xp' | 'coins' | 'streak' | 'speakingLevel' | 'writingLevel';
+  type LeaderboardPlayer = {
+    id: string;
+    displayName: string;
+    photoURL: string | null;
+    xp: number;
+    coins: number;
+    streak: number;
+    speakingLevel: number;
+    writingLevel: number;
+  };
+
+  const [activeMetric, setActiveMetric] = useState<LeaderboardMetric>('xp');
+  const [players, setPlayers] = useState<LeaderboardPlayer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, 'users'),
+      (snap) => {
+        const mapped = snap.docs.map((docSnap) => {
+          const data = docSnap.data() as Partial<UserProfile>;
+          return {
+            id: docSnap.id,
+            displayName: data.displayName || 'Ẩn danh',
+            photoURL: data.photoURL || null,
+            xp: data.xp || 0,
+            coins: data.coins || 0,
+            streak: data.streak || 0,
+            speakingLevel: data.speakingLevel || 1,
+            writingLevel: data.writingLevel || 1
+          };
+        });
+
+        setPlayers(mapped);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('Failed to load leaderboard:', error);
+        setIsLoading(false);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
+
+  const tabs: Array<{ id: LeaderboardMetric; label: string; icon: any }> = [
+    { id: 'xp', label: 'Tech Titan (XP)', icon: Flame },
+    { id: 'coins', label: 'Coin Hunter', icon: Award },
+    { id: 'streak', label: 'Streak Master', icon: Clock },
+    { id: 'speakingLevel', label: 'Speaking Rank', icon: Mic },
+    { id: 'writingLevel', label: 'Writing Rank', icon: PenTool },
+  ];
+
+  const sortedPlayers = [...players]
+    .sort((a, b) => (b[activeMetric] as number) - (a[activeMetric] as number))
+    .slice(0, 20);
+
+  const formatMetricValue = (player: LeaderboardPlayer) => {
+    if (activeMetric === 'xp') return `${player.xp} XP`;
+    if (activeMetric === 'coins') return `${player.coins} coins`;
+    if (activeMetric === 'streak') return `${player.streak} ngày`;
+    if (activeMetric === 'speakingLevel') return `Level ${player.speakingLevel}`;
+    return `Level ${player.writingLevel}`;
+  };
+
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="cute-card p-8 min-h-[600px] relative overflow-hidden">
@@ -3011,22 +4009,19 @@ const LeaderboardView = () => {
           <h2 className="text-3xl font-black text-brand-indigo flex items-center gap-3">
             <Crown className="text-brand-yellow fill-brand-yellow" size={32} /> BẢNG PHONG THẦN
           </h2>
-          <button className="p-2 text-slate-300 hover:text-slate-500">
-            <X size={24} />
-          </button>
         </div>
 
-        <div className="flex gap-6 border-b border-brand-soft-pink dark:border-slate-700 mb-12 overflow-x-auto pb-2 relative z-10">
-          {[
-            { id: 'xp', label: 'Tech Titan (XP)', icon: Flame },
-            { id: 'vocab', label: 'Lexicon Master', icon: BookOpen },
-            { id: 'grammar', label: 'Syntax Wizard', icon: PenTool },
-            { id: 'exam', label: 'Steady Explorer', icon: Clock },
-            { id: 'toeic', label: 'Field Expert', icon: Trophy },
-          ].map(tab => (
-            <button 
+        <div className="flex gap-4 border-b border-brand-soft-pink dark:border-slate-700 mb-8 overflow-x-auto pb-2 relative z-10">
+          {tabs.map(tab => (
+            <button
               key={tab.id}
-              className="whitespace-nowrap flex items-center gap-2 px-4 py-4 font-bold text-slate-400 dark:text-slate-500 hover:text-brand-indigo transition-all border-b-4 border-transparent hover:border-brand-indigo"
+              onClick={() => setActiveMetric(tab.id)}
+              className={cn(
+                'whitespace-nowrap flex items-center gap-2 px-4 py-3 font-bold transition-all border-b-4',
+                activeMetric === tab.id
+                  ? 'text-brand-indigo border-brand-indigo'
+                  : 'text-slate-400 dark:text-slate-500 border-transparent hover:text-brand-indigo'
+              )}
             >
               <tab.icon size={18} />
               {tab.label}
@@ -3034,10 +4029,70 @@ const LeaderboardView = () => {
           ))}
         </div>
 
-        <div className="flex flex-col items-center justify-center py-20 space-y-6 relative z-10">
-          <div className="w-16 h-16 border-4 border-brand-indigo border-t-transparent rounded-full animate-spin" />
-          <p className="text-slate-600 dark:text-slate-300 font-bold text-lg animate-pulse">Đang đồng bộ hóa dữ liệu thám hiểm...</p>
-        </div>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-6 relative z-10">
+            <div className="w-16 h-16 border-4 border-brand-indigo border-t-transparent rounded-full animate-spin" />
+            <p className="text-slate-600 dark:text-slate-300 font-bold text-lg animate-pulse">Đang đồng bộ hóa dữ liệu thám hiểm...</p>
+          </div>
+        ) : sortedPlayers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-4 relative z-10">
+            <Crown size={40} className="text-slate-300 dark:text-slate-600" />
+            <p className="text-slate-500 dark:text-slate-400 font-bold text-lg">Chưa có dữ liệu xếp hạng.</p>
+          </div>
+        ) : (
+          <div className="space-y-3 relative z-10">
+            {sortedPlayers.map((player, index) => {
+              const isCurrentUser = player.id === currentUserId;
+
+              return (
+                <div
+                  key={player.id}
+                  className={cn(
+                    'flex items-center gap-4 p-4 rounded-2xl border transition-all',
+                    isCurrentUser
+                      ? 'bg-brand-indigo/10 border-brand-indigo/50'
+                      : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
+                  )}
+                >
+                  <div className={cn(
+                    'w-10 h-10 rounded-xl flex items-center justify-center font-black',
+                    index === 0
+                      ? 'bg-brand-yellow text-white'
+                      : index === 1
+                      ? 'bg-slate-300 text-slate-800'
+                      : index === 2
+                      ? 'bg-amber-700 text-white'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                  )}>
+                    {index + 1}
+                  </div>
+
+                  {player.photoURL ? (
+                    <img
+                      src={player.photoURL}
+                      alt={player.displayName}
+                      className="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-600"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-black text-slate-600 dark:text-slate-300">
+                      {player.displayName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black text-slate-900 dark:text-white truncate">{player.displayName}</p>
+                    {isCurrentUser && <p className="text-xs font-black text-brand-indigo uppercase tracking-widest">Bạn</p>}
+                  </div>
+
+                  <div className="text-right">
+                    <p className="font-black text-brand-indigo dark:text-indigo-300">{formatMetricValue(player)}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -3974,6 +5029,7 @@ type AppRoute =
   | 'tasks'
   | 'gamezone'
   | 'logistics'
+  | 'communicative'
   | 'speaking'
   | 'writing'
   | 'vocabulary'
@@ -3988,6 +5044,7 @@ const APP_ROUTES: AppRoute[] = [
   'tasks',
   'gamezone',
   'logistics',
+  'communicative',
   'speaking',
   'writing',
   'vocabulary',
@@ -4015,6 +5072,8 @@ const getRouteFromPath = (pathname: string): AppRoute => {
       return 'gamezone';
     case '/logistics':
       return 'logistics';
+    case '/communicative':
+      return 'communicative';
     case '/speaking':
       return 'speaking';
     case '/writing':
@@ -4055,6 +5114,7 @@ export default function App() {
   const [speakingAttempts, setSpeakingAttempts] = useState<SpeakingAttempt[]>([]);
   const [writingChecks, setWritingChecks] = useState<WritingCheck[]>([]);
   const [allStudents, setAllStudents] = useState<any[]>([]);
+  const [vocabularySearchTerm, setVocabularySearchTerm] = useState('');
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
@@ -4423,12 +5483,28 @@ export default function App() {
                 transition={{ duration: 0.3 }}
                 className="max-w-6xl mx-auto"
               >
-                {activeTab === 'home' && <HomeView user={user} userProfile={userProfile} tasks={tasks} setActiveTab={setActiveTab} />}
+                {activeTab === 'home' && (
+                  <HomeView
+                    user={user}
+                    userProfile={userProfile}
+                    tasks={tasks}
+                    setActiveTab={setActiveTab}
+                    onSearchVocabulary={(term) => {
+                      setVocabularySearchTerm(term);
+                      setActiveTab('vocabulary');
+                    }}
+                  />
+                )}
                 {activeTab === 'gamezone' && <GameZoneView userId={user.uid} userProfile={userProfile} questions={gameQuestions.length > 0 ? gameQuestions : GAME_QUESTIONS} />}
                 {activeTab === 'logistics' && <LogisticsChallenge userId={user.uid} userProfile={userProfile} />}
+                {activeTab === 'communicative' && (
+                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <CommunicativeCompetenceView userId={user.uid} userProfile={userProfile} />
+                  </div>
+                )}
                 {activeTab === 'vocabulary' && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <VocabularyView />
+                    <VocabularyView externalSearchTerm={vocabularySearchTerm} />
                   </div>
                 )}
                 {activeTab === 'speaking' && (
@@ -4474,7 +5550,7 @@ export default function App() {
                     </div>
                   </div>
                 )}
-                {activeTab === 'leaderboard' && <LeaderboardView />}
+                {activeTab === 'leaderboard' && <LeaderboardView currentUserId={user.uid} />}
                 {activeTab === 'tasks' && <TasksView userId={user.uid} tasks={tasks} />}
                 {activeTab === 'profile' && (
                   <div className="space-y-8">

@@ -94,6 +94,9 @@ export interface VocabularyItem {
   id: string;
   term: string;
   pronunciation?: string;
+  imageUrl?: string;
+  imageUrls?: string[];
+  audioUrl?: string;
   definitionEnglish: string;
   meaningVietnamese: string;
   examplesInContext: string[];
